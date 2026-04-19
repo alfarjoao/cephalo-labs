@@ -80,6 +80,94 @@ function AnimatedHeadline({ words, className }) {
   )
 }
 
+function EcosystemSection() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  const nodes = [
+    {
+      id: 'labs',
+      label: 'Cephalo Labs',
+      sub: 'The company',
+      center: true,
+    },
+    {
+      id: 'polypus',
+      label: 'Polypus',
+      sub: 'AI coding orchestrator',
+      note: 'Like Claude Code, but multi-model',
+      href: '/products',
+    },
+    {
+      id: 'app',
+      label: 'Cephalo App',
+      sub: 'The AI workspace',
+      note: 'Chat, code, create — coming soon',
+      href: '/contact',
+    },
+    {
+      id: 'pantheon',
+      label: 'Pantheon Growth',
+      sub: 'Agency partner',
+      note: 'Strategy & growth execution',
+      href: '/partners',
+    },
+  ]
+
+  return (
+    <section className="py-32 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <FadeIn>
+          <span className="text-xs font-medium tracking-widest uppercase text-gray-400 block mb-3">
+            The Ecosystem
+          </span>
+          <h2 className="font-sans font-semibold text-[clamp(2rem,4vw,3.5rem)] tracking-tight mb-4">
+            Everything connects.
+          </h2>
+          <p className="text-gray-500 text-lg max-w-xl mb-20">
+            One lab. Multiple products. One agency partner. All built to reinforce each other.
+          </p>
+        </FadeIn>
+
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200">
+          {nodes.map((node, i) => (
+            <motion.div
+              key={node.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+              className={`bg-white p-10 flex flex-col gap-3${node.center ? ' bg-gray-50' : ''}`}
+            >
+              {node.center && (
+                <span className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-1">
+                  Core
+                </span>
+              )}
+              <h3 className="font-sans font-semibold text-xl tracking-tight text-black">
+                {node.label}
+              </h3>
+              <p className="text-xs font-medium tracking-widest uppercase text-gray-400">
+                {node.sub}
+              </p>
+              {node.note && (
+                <p className="text-sm text-gray-500 mt-1">{node.note}</p>
+              )}
+              {node.href && (
+                <a
+                  href={node.href}
+                  className="text-xs font-medium tracking-widest uppercase text-black border-b border-gray-200 pb-0.5 self-start mt-auto hover:border-black transition-colors duration-200"
+                >
+                  Learn more →
+                </a>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
   return (
     <PageWrapper>
@@ -185,6 +273,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <EcosystemSection />
 
       {/* FEATURED WORK */}
       <section className="py-32 border-b border-gray-100">
