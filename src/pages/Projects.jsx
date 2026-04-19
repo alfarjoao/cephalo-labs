@@ -1,6 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
@@ -23,6 +23,7 @@ export const projects = [
     type: 'AI Ecosystem',
     year: '2024',
     status: 'Active',
+    category: 'AI Systems',
     description: 'A seven-app Electron ecosystem communicating through a central command hub on port 3099. A distributed AI operating system for maximum throughput and autonomous execution.',
     stack: ['Electron', 'React', 'TypeScript', 'Express', 'SQLite', 'Ollama'],
     highlights: [
@@ -38,6 +39,7 @@ export const projects = [
     type: 'AI Orchestrator',
     year: '2024',
     status: 'Active',
+    category: 'AI Systems',
     description: 'Multi-model AI orchestration system. Any input enters, the right model handles it, any output emerges. Hot/warm/cold memory architecture, autonomous agent spawning, and intelligent model routing.',
     stack: ['Electron', 'React', 'TypeScript', 'SQLite', 'Anthropic API', 'Ollama'],
     highlights: [
@@ -53,6 +55,7 @@ export const projects = [
     type: 'AI Desktop App',
     year: '2024',
     status: 'Active',
+    category: 'AI Systems',
     description: 'A local-first AI desktop application. Maximum privacy, maximum intelligence. Built for those who need AI power without cloud dependency.',
     stack: ['Electron', 'React', 'TypeScript', 'Ollama', 'Claude API', 'Vault RAG'],
     highlights: [
@@ -68,6 +71,7 @@ export const projects = [
     type: 'AI Productivity',
     year: '2025',
     status: 'In Development',
+    category: 'Products',
     description: 'The AI orchestration layer for builders. A VS Code-inspired desktop app wrapping Claude Code CLI with a full intelligence layer — model routing, persistent memory, agent spawning, and creative output capabilities.',
     stack: ['Electron', 'React', 'TypeScript', 'Claude API', 'Remotion', 'Playwright'],
     highlights: [
@@ -83,6 +87,7 @@ export const projects = [
     type: 'SaaS Platform',
     year: '2024',
     status: 'Live',
+    category: 'Agency',
     description: 'A full-stack CRM and operations platform built for Pantheon Growth. Pipeline management, client portal, Instagram DM hub, Apollo.io integration, and AI-powered automation.',
     stack: ['React', 'TypeScript', 'Supabase', 'Zustand', 'Tailwind', 'Vite'],
     highlights: [
@@ -98,6 +103,7 @@ export const projects = [
     type: 'Operations Platform',
     year: '2024',
     status: 'Live',
+    category: 'Agency',
     description: 'The operating system of Pantheon Growth agency. Calendar, tasks, client management, sales hub, and AI-assisted workflows — all in one unified platform.',
     stack: ['React', 'TypeScript', 'Supabase', 'Zustand', 'Tailwind'],
     highlights: [
@@ -110,6 +116,10 @@ export const projects = [
 ]
 
 export default function Projects() {
+  const [filter, setFilter] = useState('All')
+  const tabs = ['All', 'AI Systems', 'Products', 'Agency']
+  const visible = filter === 'All' ? projects : projects.filter(p => p.category === filter)
+
   return (
     <PageWrapper>
       <section className="relative overflow-hidden py-32 border-b border-gray-100">
@@ -130,50 +140,90 @@ export default function Projects() {
 
       <section className="py-8">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          {projects.map((p, i) => (
-            <FadeIn key={p.slug} delay={i * 0.06}>
-              <Link
-                to={`/projects/${p.slug}`}
-                className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-gray-100 hover:border-gray-300 transition-colors duration-300"
+          <div className="flex gap-0 mb-12 border-b border-gray-200">
+            {tabs.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                className={`px-5 py-3 text-xs font-medium tracking-widest uppercase transition-colors duration-200 border-b-2 -mb-px ${
+                  filter === tab
+                    ? 'border-black text-black'
+                    : 'border-transparent text-gray-400 hover:text-black'
+                }`}
               >
-                <motion.div
-                  className="md:col-span-1 flex items-start"
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
-                  viewport={{ once: true, margin: '-40px' }}
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          <AnimatePresence mode="popLayout">
+            {visible.map((p, i) => (
+              <motion.div
+                key={p.slug}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3, delay: i * 0.04 }}
+              >
+                <Link
+                  to={`/projects/${p.slug}`}
+                  className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-gray-100 hover:border-gray-300 transition-colors duration-300"
                 >
-                  <span className="text-xs font-mono text-gray-300 pt-1">{String(i + 1).padStart(2, '0')}</span>
-                </motion.div>
-                <motion.div
-                  className="md:col-span-3"
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
-                  viewport={{ once: true, margin: '-40px' }}
-                >
-                  <h3 className="text-xl font-medium text-black group-hover:text-gray-600 transition-colors mb-1">{p.name}</h3>
-                  <p className="text-xs text-gray-400 tracking-wider uppercase">{p.type}</p>
-                </motion.div>
-                <div className="md:col-span-5">
-                  <p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
-                </div>
-                <div className="md:col-span-2 flex flex-col gap-2">
-                  <span className={`text-xs font-medium tracking-wider uppercase px-2.5 py-1 self-start border ${
-                    p.status === 'Live' ? 'border-black text-black' :
-                    p.status === 'Active' ? 'border-gray-400 text-gray-400' :
-                    'border-gray-200 text-gray-300'
-                  }`}>
-                    {p.status}
-                  </span>
-                  <p className="text-xs text-gray-300">{p.year}</p>
-                </div>
-                <div className="md:col-span-1 flex items-start justify-end">
-                  <ArrowRight size={16} className="text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all duration-200 mt-1" />
-                </div>
-              </Link>
-            </FadeIn>
-          ))}
+                  <motion.div
+                    className="md:col-span-1 flex items-start gap-3"
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
+                    viewport={{ once: true, margin: '-40px' }}
+                  >
+                    <span className="text-xs font-mono text-gray-300 pt-1">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="flex-shrink-0 w-10 h-10 border border-gray-200 flex items-center justify-center overflow-hidden bg-white">
+                      <img
+                        src={`/logos/${p.slug}-mark.png`}
+                        alt={p.name}
+                        className="w-6 h-6 object-contain"
+                        onError={(e) => {
+                          const parent = e.currentTarget.parentElement
+                          e.currentTarget.style.display = 'none'
+                          parent.style.background = '#0A0A0A'
+                          parent.insertAdjacentHTML('beforeend',
+                            `<span style="color:white;font-size:12px;font-family:sans-serif;font-weight:600">${p.name.charAt(0)}</span>`
+                          )
+                        }}
+                      />
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    className="md:col-span-3"
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
+                    viewport={{ once: true, margin: '-40px' }}
+                  >
+                    <h3 className="text-xl font-medium text-black group-hover:text-gray-600 transition-colors mb-1">{p.name}</h3>
+                    <p className="text-xs text-gray-400 tracking-wider uppercase">{p.type}</p>
+                  </motion.div>
+                  <div className="md:col-span-5">
+                    <p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
+                  </div>
+                  <div className="md:col-span-2 flex flex-col gap-2">
+                    <span className={`text-xs font-medium tracking-wider uppercase px-2.5 py-1 self-start border ${
+                      p.status === 'Live' ? 'border-black text-black' :
+                      p.status === 'Active' ? 'border-gray-400 text-gray-400' :
+                      'border-gray-200 text-gray-300'
+                    }`}>
+                      {p.status}
+                    </span>
+                    <p className="text-xs text-gray-300">{p.year}</p>
+                  </div>
+                  <div className="md:col-span-1 flex items-start justify-end">
+                    <ArrowRight size={16} className="text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all duration-200 mt-1" />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </section>
     </PageWrapper>
