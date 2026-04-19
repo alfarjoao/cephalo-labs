@@ -23,7 +23,7 @@ export default function Founder() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Founder</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl">
               João Alfar
             </h1>
           </motion.div>
@@ -44,7 +44,7 @@ export default function Founder() {
                   e.target.parentElement.innerHTML = `
                     <div class="w-full h-full flex items-center justify-center">
                       <div class="text-center">
-                        <p class="font-serif text-8xl text-gray-100">JA</p>
+                        <p class="font-sans font-semibold text-8xl text-gray-100">JA</p>
                         <p class="text-xs text-gray-300 tracking-wider uppercase mt-4">João Alfar</p>
                       </div>
                     </div>
@@ -116,7 +116,7 @@ export default function Founder() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12 max-w-3xl">
           <FadeIn>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">In his own words</p>
-            <blockquote className="font-serif text-2xl text-black leading-relaxed mb-6">
+            <blockquote className="font-sans font-light text-2xl text-black leading-relaxed mb-6">
               "I do not build AI tools because they are trendy. I build them because
               every time I finish one, I cannot imagine working without it.
               That is the bar. If I would not use it myself, we do not ship it."
@@ -135,7 +135,7 @@ export default function Founder() {
           <FadeIn delay={0.1}>
             <div className="flex items-center gap-8 p-8 border border-gray-200">
               <div className="w-16 h-16 bg-gray-100 flex items-center justify-center flex-shrink-0">
-                <span className="font-serif text-2xl text-gray-300">S</span>
+                <span className="font-sans font-light text-2xl text-gray-300">S</span>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-black mb-1">Simão</h3>

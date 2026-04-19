@@ -30,7 +30,7 @@ export default function Partners() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Partners</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
               Built together.<br />
               <em className="not-italic text-gray-300">Growing together.</em>
             </h1>
@@ -132,7 +132,7 @@ export default function Partners() {
             {results.map((r, i) => (
               <FadeIn key={r.label} delay={i * 0.08}>
                 <div className={`p-10 text-center ${i < 3 ? 'border-r border-gray-200' : ''}`}>
-                  <p className="font-serif text-5xl text-black mb-3">{r.value}</p>
+                  <p className="font-sans font-semibold text-5xl text-black mb-3">{r.value}</p>
                   <p className="text-xs text-gray-400 leading-relaxed">{r.label}</p>
                 </div>
               </FadeIn>

@@ -22,7 +22,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Contact</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
               Let's build<br />
               <em className="not-italic text-gray-300">something real.</em>
             </h1>
@@ -45,7 +45,7 @@ export default function Contact() {
           >
             {sent ? (
               <div className="py-20 text-center">
-                <p className="font-serif text-4xl text-black mb-4">Thank you.</p>
+                <p className="font-sans font-semibold text-4xl text-black mb-4">Thank you.</p>
                 <p className="text-gray-500">We'll be in touch shortly.</p>
               </div>
             ) : (

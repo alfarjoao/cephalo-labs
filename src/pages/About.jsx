@@ -32,7 +32,7 @@ export default function About() {
             transition={{ duration: 0.7 }}
           >
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">About</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] text-black max-w-3xl mb-10">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] text-black max-w-3xl mb-10">
               An AI company<br />
               <em className="not-italic text-gray-300">built different.</em>
             </h1>
@@ -125,7 +125,7 @@ export default function About() {
             ].map((s, i) => (
               <FadeIn key={s.label} delay={i * 0.08}>
                 <div className={`p-10 text-center ${i < 3 ? 'border-r border-gray-200' : ''}`}>
-                  <p className="font-serif text-5xl text-black mb-2">{s.value}</p>
+                  <p className="font-sans font-semibold text-5xl text-black mb-2">{s.value}</p>
                   <p className="text-xs text-gray-400 tracking-wider uppercase">{s.label}</p>
                 </div>
               </FadeIn>

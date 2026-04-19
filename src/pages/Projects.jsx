@@ -115,7 +115,7 @@ export default function Projects() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Projects</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
               Systems we've<br />
               <em className="not-italic text-gray-300">engineered.</em>
             </h1>
