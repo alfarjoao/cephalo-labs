@@ -1,9 +1,23 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Mail } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
+import AnimatedBackground from '../components/ui/AnimatedBackground'
+
+function FadeIn({ children, delay = 0, className = '' }) {
+  const ref = useRef()
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  return (
+    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }} className={className}>
+      {children}
+    </motion.div>
+  )
+}
 
 export default function Contact() {
+  useMeta('Contact — Cephalo Labs', 'Start a conversation with Cephalo Labs. Build AI systems, deploy intelligent infrastructure, or partner with us.')
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '', type: 'Build something' })
   const [sent, setSent] = useState(false)
 
@@ -18,11 +32,12 @@ export default function Contact() {
   return (
     <PageWrapper>
       {/* Header */}
-      <section className="py-32 border-b border-gray-100">
+      <section className="relative overflow-hidden py-32 border-b border-gray-100">
+        <AnimatedBackground opacity={0.06} />
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Contact</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
               Let's build<br />
               <em className="not-italic text-gray-300">something real.</em>
             </h1>
@@ -45,7 +60,7 @@ export default function Contact() {
           >
             {sent ? (
               <div className="py-20 text-center">
-                <p className="font-serif text-4xl text-black mb-4">Thank you.</p>
+                <p className="font-sans font-semibold text-4xl text-black mb-4">Thank you.</p>
                 <p className="text-gray-500">We'll be in touch shortly.</p>
               </div>
             ) : (
@@ -56,19 +71,20 @@ export default function Contact() {
                     I want to
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {types.map(t => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setForm(f => ({ ...f, type: t }))}
-                        className={`text-xs font-medium tracking-wider uppercase px-4 py-2 border transition-colors ${
-                          form.type === t
-                            ? 'border-black bg-black text-white'
-                            : 'border-gray-200 text-gray-500 hover:border-gray-400'
-                        }`}
-                      >
-                        {t}
-                      </button>
+                    {types.map((t, i) => (
+                      <FadeIn key={t} delay={i * 0.06}>
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, type: t }))}
+                          className={`text-xs font-medium tracking-wider uppercase px-4 py-2 border transition-colors ${
+                            form.type === t
+                              ? 'border-black bg-black text-white'
+                              : 'border-gray-200 text-gray-500 hover:border-gray-400'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      </FadeIn>
                     ))}
                   </div>
                 </div>

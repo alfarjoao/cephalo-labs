@@ -5,7 +5,7 @@ import * as THREE from 'three'
 
 function NeuralParticles() {
   const ref = useRef()
-  const count = 800
+  const count = window.innerWidth < 768 ? 400 : 800
 
   const { positions } = useMemo(() => {
     const positions = new Float32Array(count * 3)
@@ -17,7 +17,7 @@ function NeuralParticles() {
     }
 
     return { positions }
-  }, [])
+  }, [count])
 
   useFrame((state) => {
     if (!ref.current) return

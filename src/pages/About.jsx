@@ -2,7 +2,10 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
+import AnimatedBackground from '../components/ui/AnimatedBackground'
+import CountUp from '../components/ui/CountUp'
 
 function FadeIn({ children, delay = 0, className = '' }) {
   const ref = useRef()
@@ -21,10 +24,12 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 export default function About() {
+  useMeta('About — Cephalo Labs', 'Cephalo Labs is an AI company built differently. We build intelligent systems, not demos.')
   return (
     <PageWrapper>
       {/* Header */}
-      <section className="py-32 border-b border-gray-100">
+      <section className="relative overflow-hidden py-32 border-b border-gray-100">
+        <AnimatedBackground opacity={0.06} />
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -32,7 +37,7 @@ export default function About() {
             transition={{ duration: 0.7 }}
           >
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">About</p>
-            <h1 className="font-serif text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] text-black max-w-3xl mb-10">
+            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5.5rem)] leading-[0.95] text-black max-w-3xl mb-10">
               An AI company<br />
               <em className="not-italic text-gray-300">built different.</em>
             </h1>
@@ -118,14 +123,18 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-gray-200 bg-white">
             {[
-              { value: '6+', label: 'AI Systems Built' },
-              { value: '2', label: 'Years Building' },
-              { value: '1', label: 'Flagship Product' },
-              { value: '∞', label: 'Systems Possible' },
+              { value: '6+', label: 'AI Systems Built', countTo: 6, suffix: '+' },
+              { value: '2', label: 'Years Building', countTo: 2, suffix: '' },
+              { value: '1', label: 'Flagship Product', countTo: 1, suffix: '' },
+              { value: '∞', label: 'Systems Possible', countTo: null, suffix: '' },
             ].map((s, i) => (
               <FadeIn key={s.label} delay={i * 0.08}>
                 <div className={`p-10 text-center ${i < 3 ? 'border-r border-gray-200' : ''}`}>
-                  <p className="font-serif text-5xl text-black mb-2">{s.value}</p>
+                  <p className="font-sans font-semibold text-5xl text-black mb-2">
+                    {s.countTo !== null
+                      ? <CountUp to={s.countTo} suffix={s.suffix} />
+                      : s.value}
+                  </p>
                   <p className="text-xs text-gray-400 tracking-wider uppercase">{s.label}</p>
                 </div>
               </FadeIn>
