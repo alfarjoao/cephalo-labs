@@ -87,7 +87,7 @@ export default function Home() {
             </p>
 
             {/* Headline */}
-            <h1 className="font-serif text-[clamp(3rem,8vw,7rem)] leading-[0.95] text-black mb-8 max-w-4xl">
+            <h1 className="font-sans font-semibold text-[clamp(3rem,8vw,7rem)] leading-[0.95] text-black mb-8 max-w-4xl tracking-tight">
               We build<br />
               <em className="not-italic text-gray-300">intelligent</em><br />
               systems.
@@ -189,7 +189,7 @@ export default function Home() {
             <FadeIn>
               <div>
                 <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-6">Flagship product</p>
-                <h2 className="font-serif text-5xl text-black mb-6 leading-tight">Polypus</h2>
+                <h2 className="font-sans font-semibold text-5xl text-black mb-6 leading-tight tracking-tight">Polypus</h2>
                 <p className="text-gray-500 leading-relaxed mb-8">
                   The AI orchestration layer your workflow has been missing.
                   Model routing, persistent memory, autonomous agents —
@@ -211,7 +211,7 @@ export default function Home() {
                   alt="Polypus"
                   className="w-32 h-32 object-contain"
                   onError={e => {
-                    e.target.parentElement.innerHTML = '<div class="text-6xl font-serif text-gray-100">P</div>'
+                    e.target.parentElement.innerHTML = '<div class="text-6xl font-sans font-semibold text-gray-100">P</div>'
                   }}
                 />
               </div>
@@ -224,7 +224,7 @@ export default function Home() {
       <section className="py-32">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
           <FadeIn>
-            <h2 className="font-serif text-[clamp(2.5rem,5vw,4.5rem)] text-black mb-6 leading-tight">
+            <h2 className="font-sans font-semibold text-[clamp(2.5rem,5vw,4.5rem)] text-black mb-6 leading-tight tracking-tight">
               Ready to build<br />with intelligence?
             </h2>
             <p className="text-gray-500 mb-10 max-w-lg mx-auto">
