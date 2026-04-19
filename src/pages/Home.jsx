@@ -168,6 +168,102 @@ function EcosystemSection() {
   )
 }
 
+function CephaloAppTeaser() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  return (
+    <section className="py-32 bg-[#0A0A0A] text-white relative overflow-hidden">
+      {/* Purple blob */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)' }}
+      />
+      {/* Emerald blob */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-40 -right-40 w-[400px] h-[400px] rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)' }}
+      />
+
+      <div ref={ref} className="max-w-7xl mx-auto px-6 lg:px-12 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* Left: copy */}
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 border border-white/10 px-4 py-2 mb-8"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED] inline-block" />
+              <span className="text-xs font-medium tracking-widest uppercase text-white/50">
+                In development
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+              className="font-sans font-semibold text-[clamp(2rem,4vw,3.5rem)] tracking-tight text-white mb-6 leading-tight"
+            >
+              One app. Every AI model. Unlimited capability.
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-white/50 text-lg max-w-lg mb-10 leading-relaxed"
+            >
+              Cephalo is the AI workspace built for people who build.
+              Chat with any model. Orchestrate agents. Ship with Polypus.
+              Everything in one place.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <a
+                href="/contact"
+                className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm font-medium tracking-widest uppercase hover:bg-white/90 transition-colors duration-200"
+              >
+                Join the waitlist
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Right: Polypus mascot */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            className="flex items-center justify-center"
+          >
+            <div className="relative">
+              <img
+                src="/logos/polypus-mark.png"
+                alt="Polypus"
+                className="w-40 h-40 object-contain opacity-60"
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+              />
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%)' }}
+                aria-hidden="true"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
   return (
     <PageWrapper>
@@ -275,6 +371,8 @@ export default function Home() {
       </section>
 
       <EcosystemSection />
+
+      <CephaloAppTeaser />
 
       {/* FEATURED WORK */}
       <section className="py-32 border-b border-gray-100">
