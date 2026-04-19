@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Linkedin, Github } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 
@@ -17,6 +18,7 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 export default function Founder() {
+  useMeta('Founder — Cephalo Labs', 'João Alfar — CEO & Founder of Cephalo Labs and Pantheon Growth. Builder of AI systems and products.')
   return (
     <PageWrapper>
       {/* Header */}

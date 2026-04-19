@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 import CountUp from '../components/ui/CountUp'
@@ -23,6 +24,7 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 export default function About() {
+  useMeta('About — Cephalo Labs', 'Cephalo Labs is an AI company built differently. We build intelligent systems, not demos.')
   return (
     <PageWrapper>
       {/* Header */}

@@ -2,6 +2,7 @@ import { useRef, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ArrowDown, ExternalLink } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import NeuralScene from '../components/3d/NeuralScene'
 
@@ -351,6 +352,7 @@ function VSLSection() {
 }
 
 export default function Home() {
+  useMeta('Cephalo Labs — AI Developer Agency', 'We build AI products, deploy AI infrastructure, and operate as a full-spectrum AI developer agency based in Coimbra, Portugal.')
   return (
     <PageWrapper>
       {/* HERO */}

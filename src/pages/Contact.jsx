@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Mail } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 
@@ -16,6 +17,7 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 export default function Contact() {
+  useMeta('Contact — Cephalo Labs', 'Start a conversation with Cephalo Labs. Build AI systems, deploy intelligent infrastructure, or partner with us.')
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '', type: 'Build something' })
   const [sent, setSent] = useState(false)
 

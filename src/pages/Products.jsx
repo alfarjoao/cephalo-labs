@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import { ArrowRight, ExternalLink } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 
@@ -17,6 +18,7 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 export default function Products() {
+  useMeta('Products — Cephalo Labs', 'Polypus — the AI orchestration layer. Multi-model, multi-agent, built for builders.')
   return (
     <PageWrapper>
       <section className="relative overflow-hidden py-32 border-b border-gray-100">

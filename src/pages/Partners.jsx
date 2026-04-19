@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ExternalLink } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 import CountUp from '../components/ui/CountUp'
@@ -25,6 +26,7 @@ const results = [
 ]
 
 export default function Partners() {
+  useMeta('Partners — Cephalo Labs', 'Cephalo Labs and Pantheon Growth — building AI infrastructure for growth-stage companies.')
   return (
     <PageWrapper>
       {/* Header */}

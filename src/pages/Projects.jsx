@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
 
@@ -116,6 +117,7 @@ export const projects = [
 ]
 
 export default function Projects() {
+  useMeta('Projects — Cephalo Labs', 'AI systems, products, and platforms built by Cephalo Labs. TITAN AI, AXIOM, SOVEREIGN, Polypus, and more.')
   const [filter, setFilter] = useState('All')
   const tabs = ['All', 'AI Systems', 'Products', 'Agency']
   const visible = filter === 'All' ? projects : projects.filter(p => p.category === filter)
