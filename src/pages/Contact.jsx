@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Mail } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
+import AnimatedBackground from '../components/ui/AnimatedBackground'
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '', type: 'Build something' })
@@ -18,7 +19,8 @@ export default function Contact() {
   return (
     <PageWrapper>
       {/* Header */}
-      <section className="py-32 border-b border-gray-100">
+      <section className="relative overflow-hidden py-32 border-b border-gray-100">
+        <AnimatedBackground opacity={0.06} />
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Contact</p>
