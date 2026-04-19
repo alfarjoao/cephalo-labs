@@ -57,18 +57,20 @@ export default function Products() {
                   with an intelligence layer that makes every session smarter than the last.
                 </p>
 
-                <div className="space-y-3 mb-8">
+                <div className="mb-8">
                   {[
                     'Adaptive model routing — Haiku, Sonnet, Opus based on task complexity',
                     'Hot/warm/cold memory — sessions that remember everything',
                     'Agent spawner — autonomous parallel execution',
                     'Skill registry — auto-install missing capabilities',
                     'Pre-processor — every prompt optimised before execution',
-                  ].map(f => (
-                    <div key={f} className="flex items-start gap-3">
-                      <div className="w-1 h-1 rounded-full bg-black mt-2 flex-shrink-0" />
-                      <p className="text-sm text-gray-500">{f}</p>
-                    </div>
+                  ].map((f, i) => (
+                    <FadeIn key={f} delay={i * 0.08}>
+                      <div className="flex items-start gap-3 py-3 border-b border-gray-100">
+                        <span className="w-1 h-1 rounded-full bg-black mt-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">{f}</span>
+                      </div>
+                    </FadeIn>
                   ))}
                 </div>
 

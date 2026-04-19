@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
+import CountUp from '../components/ui/CountUp'
 
 function FadeIn({ children, delay = 0, className = '' }) {
   const ref = useRef()
@@ -120,14 +121,18 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-gray-200 bg-white">
             {[
-              { value: '6+', label: 'AI Systems Built' },
-              { value: '2', label: 'Years Building' },
-              { value: '1', label: 'Flagship Product' },
-              { value: '∞', label: 'Systems Possible' },
+              { value: '6+', label: 'AI Systems Built', countTo: 6, suffix: '+' },
+              { value: '2', label: 'Years Building', countTo: 2, suffix: '' },
+              { value: '1', label: 'Flagship Product', countTo: 1, suffix: '' },
+              { value: '∞', label: 'Systems Possible', countTo: null, suffix: '' },
             ].map((s, i) => (
               <FadeIn key={s.label} delay={i * 0.08}>
                 <div className={`p-10 text-center ${i < 3 ? 'border-r border-gray-200' : ''}`}>
-                  <p className="font-sans font-semibold text-5xl text-black mb-2">{s.value}</p>
+                  <p className="font-sans font-semibold text-5xl text-black mb-2">
+                    {s.countTo !== null
+                      ? <CountUp to={s.countTo} suffix={s.suffix} />
+                      : s.value}
+                  </p>
                   <p className="text-xs text-gray-400 tracking-wider uppercase">{s.label}</p>
                 </div>
               </FadeIn>
