@@ -1,8 +1,19 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Mail } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
+
+function FadeIn({ children, delay = 0, className = '' }) {
+  const ref = useRef()
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  return (
+    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }} className={className}>
+      {children}
+    </motion.div>
+  )
+}
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '', type: 'Build something' })
@@ -58,19 +69,20 @@ export default function Contact() {
                     I want to
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {types.map(t => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setForm(f => ({ ...f, type: t }))}
-                        className={`text-xs font-medium tracking-wider uppercase px-4 py-2 border transition-colors ${
-                          form.type === t
-                            ? 'border-black bg-black text-white'
-                            : 'border-gray-200 text-gray-500 hover:border-gray-400'
-                        }`}
-                      >
-                        {t}
-                      </button>
+                    {types.map((t, i) => (
+                      <FadeIn key={t} delay={i * 0.06}>
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, type: t }))}
+                          className={`text-xs font-medium tracking-wider uppercase px-4 py-2 border transition-colors ${
+                            form.type === t
+                              ? 'border-black bg-black text-white'
+                              : 'border-gray-200 text-gray-500 hover:border-gray-400'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      </FadeIn>
                     ))}
                   </div>
                 </div>

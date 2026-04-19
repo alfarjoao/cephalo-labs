@@ -63,28 +63,36 @@ export default function Founder() {
               <p className="text-xs text-gray-300 tracking-wider uppercase mb-10">Coimbra, Portugal</p>
 
               <div className="space-y-5 text-gray-600 leading-relaxed mb-12">
-                <p>
-                  João Alfar is the founder and CEO of Cephalo Labs, the AI developer agency he built
-                  from the ground up in Portugal. Before Cephalo, he co-founded Pantheon Growth —
-                  a revenue architecture and digital marketing agency — where he discovered what
-                  happens when AI meets real business problems.
-                </p>
-                <p>
-                  He builds things. Not presentations about building things — actual systems.
-                  TITAN AI, AXIOM, SOVEREIGN, Polypus — every product at Cephalo Labs
-                  was conceived and executed by João, working at the frontier of what AI
-                  tooling can do for builders.
-                </p>
-                <p>
-                  His approach to AI is different. Where others see assistants, he sees infrastructure.
-                  Where others use AI to write emails, he builds AI operating systems.
-                  The work at Cephalo Labs reflects that ambition — every project is a bet on
-                  what becomes possible when AI is treated as a first-class technical discipline.
-                </p>
-                <p>
-                  He works with Claude as a technical co-founder, treating AI collaboration not as
-                  a shortcut but as a new kind of engineering partnership.
-                </p>
+                <FadeIn delay={0 * 0.12}>
+                  <p>
+                    João Alfar is the founder and CEO of Cephalo Labs, the AI developer agency he built
+                    from the ground up in Portugal. Before Cephalo, he co-founded Pantheon Growth —
+                    a revenue architecture and digital marketing agency — where he discovered what
+                    happens when AI meets real business problems.
+                  </p>
+                </FadeIn>
+                <FadeIn delay={1 * 0.12}>
+                  <p>
+                    He builds things. Not presentations about building things — actual systems.
+                    TITAN AI, AXIOM, SOVEREIGN, Polypus — every product at Cephalo Labs
+                    was conceived and executed by João, working at the frontier of what AI
+                    tooling can do for builders.
+                  </p>
+                </FadeIn>
+                <FadeIn delay={2 * 0.12}>
+                  <p>
+                    His approach to AI is different. Where others see assistants, he sees infrastructure.
+                    Where others use AI to write emails, he builds AI operating systems.
+                    The work at Cephalo Labs reflects that ambition — every project is a bet on
+                    what becomes possible when AI is treated as a first-class technical discipline.
+                  </p>
+                </FadeIn>
+                <FadeIn delay={3 * 0.12}>
+                  <p>
+                    He works with Claude as a technical co-founder, treating AI collaboration not as
+                    a shortcut but as a new kind of engineering partnership.
+                  </p>
+                </FadeIn>
               </div>
 
               {/* Role at companies */}

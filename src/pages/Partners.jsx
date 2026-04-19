@@ -112,10 +112,12 @@ export default function Partners() {
                       desc: 'Intelligent outreach workflows, automated lead scoring, and AI-powered proposal generation integrated directly into the agency operations.',
                     },
                   ].map((item, i) => (
-                    <div key={item.name} className="py-7 border-b border-gray-100">
-                      <h3 className="text-base font-medium text-black mb-2">{item.name}</h3>
-                      <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-                    </div>
+                    <FadeIn key={item.name} delay={i * 0.1}>
+                      <div className="py-7 border-b border-gray-100">
+                        <h3 className="text-base font-medium text-black mb-2">{item.name}</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </FadeIn>
                   ))}
                 </div>
               </div>
