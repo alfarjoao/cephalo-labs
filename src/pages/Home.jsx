@@ -154,12 +154,12 @@ function EcosystemSection() {
                 <p className="text-sm text-gray-500 mt-1">{node.note}</p>
               )}
               {node.href && (
-                <a
-                  href={node.href}
+                <Link
+                  to={node.href}
                   className="text-xs font-medium tracking-widest uppercase text-black border-b border-gray-200 pb-0.5 self-start mt-auto hover:border-black transition-colors duration-200"
                 >
                   Learn more →
-                </a>
+                </Link>
               )}
             </motion.div>
           ))}
@@ -229,12 +229,12 @@ function CephaloAppTeaser() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <a
-                href="/contact"
+              <Link
+                to="/contact"
                 className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm font-medium tracking-widest uppercase hover:bg-white/90 transition-colors duration-200"
               >
                 Join the waitlist
-              </a>
+              </Link>
             </motion.div>
           </div>
 

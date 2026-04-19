@@ -125,7 +125,7 @@ export default function Founder() {
 
       {/* Vision */}
       <section className="py-24 border-b border-gray-100 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 max-w-3xl">
+        <div className="max-w-3xl mx-auto px-6 lg:px-12">
           <FadeIn>
             <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">In his own words</p>
             <blockquote className="font-sans font-light text-2xl text-black leading-relaxed mb-6">

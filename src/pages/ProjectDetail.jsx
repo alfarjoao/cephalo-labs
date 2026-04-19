@@ -2,11 +2,17 @@ import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
+import { useMeta } from '../components/ui/useMeta'
 import { projects } from './Projects'
 
 export default function ProjectDetail() {
   const { slug } = useParams()
   const project = projects.find(p => p.slug === slug)
+
+  useMeta(
+    project ? `${project.name} — Cephalo Labs` : 'Project — Cephalo Labs',
+    project?.description ?? 'A project built by Cephalo Labs.'
+  )
 
   if (!project) return (
     <PageWrapper>
