@@ -1,6 +1,6 @@
 import { useRef, Suspense } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ArrowDown, ExternalLink } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
 import NeuralScene from '../components/3d/NeuralScene'
@@ -264,6 +264,92 @@ function CephaloAppTeaser() {
   )
 }
 
+function VSLSection() {
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  })
+
+  const s1Op = useTransform(scrollYProgress, [0.02, 0.12, 0.24], [0, 1, 0])
+  const s1Y  = useTransform(scrollYProgress, [0.02, 0.12], [24, 0])
+  const s2Op = useTransform(scrollYProgress, [0.20, 0.30, 0.42], [0, 1, 0])
+  const s2Y  = useTransform(scrollYProgress, [0.20, 0.30], [24, 0])
+  const s3Op = useTransform(scrollYProgress, [0.38, 0.48, 0.60], [0, 1, 0])
+  const s3Y  = useTransform(scrollYProgress, [0.38, 0.48], [24, 0])
+  const s4Op = useTransform(scrollYProgress, [0.58, 0.68, 1.0], [0, 1, 1])
+  const s4Y  = useTransform(scrollYProgress, [0.58, 0.68], [24, 0])
+
+  const models = ['Haiku', 'Sonnet', 'Opus']
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative bg-black"
+      style={{ height: '300vh' }}
+    >
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+        <div className="max-w-3xl mx-auto px-6 w-full relative" style={{ height: '100%' }}>
+
+          {/* Step 1 */}
+          <motion.div
+            style={{ opacity: s1Op, y: s1Y }}
+            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
+          >
+            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
+              You have a task.
+            </p>
+          </motion.div>
+
+          {/* Step 2 */}
+          <motion.div
+            style={{ opacity: s2Op, y: s2Y }}
+            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
+          >
+            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
+              Polypus routes it to the right model.
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-10">
+              {models.map((m) => (
+                <div key={m} className="border border-white/10 px-6 py-3">
+                  <span className="text-xs font-medium tracking-widest uppercase text-white/60">{m}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Step 3 */}
+          <motion.div
+            style={{ opacity: s3Op, y: s3Y }}
+            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
+          >
+            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
+              Agents execute in parallel.
+            </p>
+          </motion.div>
+
+          {/* Step 4 */}
+          <motion.div
+            style={{ opacity: s4Op, y: s4Y }}
+            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
+          >
+            <p className="font-sans font-semibold text-white text-[clamp(2rem,5vw,4rem)] tracking-tight leading-tight mb-4">
+              Done.
+            </p>
+            <p className="text-white/40 text-base font-light tracking-wider">
+              Faster. Smarter. One orchestrator.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* fade edges */}
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black to-transparent pointer-events-none" />
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
   return (
     <PageWrapper>
@@ -373,6 +459,8 @@ export default function Home() {
       <EcosystemSection />
 
       <CephaloAppTeaser />
+
+      <VSLSection />
 
       {/* FEATURED WORK */}
       <section className="py-32 border-b border-gray-100">
