@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, ExternalLink } from 'lucide-react'
 import PageWrapper from '../components/ui/PageWrapper'
 import AnimatedBackground from '../components/ui/AnimatedBackground'
+import CountUp from '../components/ui/CountUp'
 
 function FadeIn({ children, delay = 0, className = '' }) {
   const ref = useRef()
@@ -17,10 +18,10 @@ function FadeIn({ children, delay = 0, className = '' }) {
 }
 
 const results = [
-  { value: '2x', label: 'Revenue growth after AI OS implementation' },
-  { value: '80%', label: 'Reduction in manual CRM operations' },
-  { value: '3×', label: 'Faster client onboarding with AI-powered portal' },
-  { value: '100%', label: 'Custom-built — zero off-the-shelf software' },
+  { to: 2, suffix: 'x', label: 'Revenue growth after AI OS implementation' },
+  { to: 80, suffix: '%', label: 'Reduction in manual CRM operations' },
+  { to: 3, suffix: '×', label: 'Faster client onboarding with AI-powered portal' },
+  { to: 100, suffix: '%', label: 'Custom-built — zero off-the-shelf software' },
 ]
 
 export default function Partners() {
@@ -136,8 +137,54 @@ export default function Partners() {
             {results.map((r, i) => (
               <FadeIn key={r.label} delay={i * 0.08}>
                 <div className={`p-10 text-center ${i < 3 ? 'border-r border-gray-200' : ''}`}>
-                  <p className="font-sans font-semibold text-5xl text-black mb-3">{r.value}</p>
+                  <p className="font-sans font-semibold text-5xl text-black mb-3"><CountUp to={r.to} suffix={r.suffix} /></p>
                   <p className="text-xs text-gray-400 leading-relaxed">{r.label}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Timeline */}
+      <section className="py-24 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <FadeIn>
+            <span className="text-xs font-medium tracking-widest uppercase text-gray-400 block mb-3">
+              Process
+            </span>
+            <h2 className="font-sans font-semibold text-[clamp(1.8rem,3.5vw,3rem)] tracking-tight mb-16">
+              How we work together.
+            </h2>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            {[
+              {
+                step: '01',
+                title: 'Strategy',
+                body: 'We audit your AI readiness, map your processes, and define the highest-leverage points for intelligent automation.',
+              },
+              {
+                step: '02',
+                title: 'Build',
+                body: 'Cephalo designs and ships the systems — from data pipelines to front-end interfaces — using our full-stack AI toolkit.',
+              },
+              {
+                step: '03',
+                title: 'Scale',
+                body: 'We stay engaged. Systems improve over time, models are updated, and usage expands as your team grows into the tools.',
+              },
+            ].map((item, i) => (
+              <FadeIn key={item.step} delay={i * 0.15}>
+                <div className="border-t-2 border-gray-200 pt-8 pb-8 md:pr-12">
+                  <span className="text-xs font-medium tracking-widest uppercase text-gray-300 block mb-6">
+                    {item.step}
+                  </span>
+                  <h3 className="font-sans font-semibold text-2xl tracking-tight text-black mb-4">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{item.body}</p>
                 </div>
               </FadeIn>
             ))}
