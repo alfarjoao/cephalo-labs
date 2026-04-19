@@ -72,7 +72,7 @@ export const projects = [
     year: '2025',
     status: 'In Development',
     category: 'Products',
-    description: 'The AI orchestration layer for builders. A VS Code-inspired desktop app wrapping Claude Code CLI with a full intelligence layer — model routing, persistent memory, agent spawning, and creative output capabilities.',
+    description: 'The orchestration layer at the heart of everything Cephalo builds. Polypus routes tasks to the right model, coordinates multi-agent execution, and ships as both a standalone CLI tool (like Claude Code, but multi-model) and the core engine powering Cephalo App.',
     stack: ['Electron', 'React', 'TypeScript', 'Claude API', 'Remotion', 'Playwright'],
     highlights: [
       'Claude Code CLI with intelligence overlay',

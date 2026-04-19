@@ -53,9 +53,20 @@ export default function Products() {
                 </div>
 
                 <p className="text-gray-600 leading-relaxed mb-6">
-                  The AI orchestration desktop app. A VS Code-inspired interface wrapping Claude Code CLI
-                  with an intelligence layer that makes every session smarter than the last.
+                  Polypus is the AI orchestration layer that makes every model smarter together.
+                  As a standalone tool, it works like Claude Code — but routes tasks intelligently
+                  across Haiku, Sonnet, and Opus based on complexity. As the engine inside Cephalo App,
+                  it powers every agent, every workflow, every session.
                 </p>
+
+                <div className="flex gap-3 mt-6 mb-8 flex-wrap">
+                  <div className="border border-[#7C3AED]/30 px-4 py-2">
+                    <span className="text-xs font-medium tracking-widest uppercase text-[#7C3AED]/70">Standalone tool</span>
+                  </div>
+                  <div className="border border-[#10B981]/30 px-4 py-2">
+                    <span className="text-xs font-medium tracking-widest uppercase text-[#10B981]/70">Cephalo App engine</span>
+                  </div>
+                </div>
 
                 <div className="mb-8">
                   {[

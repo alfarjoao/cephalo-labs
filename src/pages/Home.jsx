@@ -27,7 +27,7 @@ const featuredProjects = [
   {
     name: 'Polypus',
     type: 'Product — In Development',
-    description: 'AI orchestration desktop app. Claude Code with intelligence layers — model routing, memory, agents.',
+    description: 'The AI orchestration layer. Like Claude Code, but multi-model — and the engine inside Cephalo App.',
     slug: 'polypus',
   },
   {
