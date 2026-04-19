@@ -136,13 +136,25 @@ export default function Projects() {
                 to={`/projects/${p.slug}`}
                 className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-gray-100 hover:border-gray-300 transition-colors duration-300"
               >
-                <div className="md:col-span-1 flex items-start">
+                <motion.div
+                  className="md:col-span-1 flex items-start"
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
+                  viewport={{ once: true, margin: '-40px' }}
+                >
                   <span className="text-xs font-mono text-gray-300 pt-1">{String(i + 1).padStart(2, '0')}</span>
-                </div>
-                <div className="md:col-span-3">
+                </motion.div>
+                <motion.div
+                  className="md:col-span-3"
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.25, 0.1, 0.25, 1] }}
+                  viewport={{ once: true, margin: '-40px' }}
+                >
                   <h3 className="text-xl font-medium text-black group-hover:text-gray-600 transition-colors mb-1">{p.name}</h3>
                   <p className="text-xs text-gray-400 tracking-wider uppercase">{p.type}</p>
-                </div>
+                </motion.div>
                 <div className="md:col-span-5">
                   <p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
                 </div>
