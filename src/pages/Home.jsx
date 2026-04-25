@@ -1,59 +1,29 @@
-import { useRef, Suspense } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, ArrowDown, ExternalLink } from 'lucide-react'
+import { ArrowRight, Brain, Gauge, Layers, Scissors, Zap, ShieldCheck } from 'lucide-react'
 import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
-import NeuralScene from '../components/3d/NeuralScene'
+import BackgroundPattern from '../components/ui/BackgroundPattern'
+import VideoHero from '../components/ui/VideoHero'
+import Marquee from '../components/ui/Marquee'
+import CountUp from '../components/ui/CountUp'
+import HeroBg from '../three/HeroBg'
+import KernelMark from '../components/logos/KernelMark'
 
-const pillars = [
-  {
-    number: '01',
-    title: 'Build AI',
-    description: 'We design and build proprietary AI products from the ground up — applications, orchestration systems, and intelligent infrastructure.',
-  },
-  {
-    number: '02',
-    title: 'Deploy AI',
-    description: 'We integrate AI into existing businesses. From strategy to implementation, we transform operations with precision-engineered AI systems.',
-  },
-  {
-    number: '03',
-    title: 'Ship Products',
-    description: 'Our internal builds become SaaS products. Every system we create for ourselves becomes a tool available to the world.',
-  },
-]
+const PURPLE = '#C084FC'
 
-const featuredProjects = [
-  {
-    name: 'Polypus',
-    type: 'Product — In Development',
-    description: 'The AI orchestration layer. Like Claude Code, but multi-model — and the engine inside Cephalo App.',
-    slug: 'polypus',
-  },
-  {
-    name: 'TITAN AI',
-    type: 'Project — Active',
-    description: 'Seven-app Electron ecosystem. A distributed AI operating system built for maximum throughput and autonomy.',
-    slug: 'titan-ai',
-  },
-  {
-    name: 'AXIOM',
-    type: 'Project — Active',
-    description: 'Multi-model AI orchestrator. Any input, any model, any output — with hot/warm/cold memory and autonomous agents.',
-    slug: 'axiom',
-  },
-]
+// ── helpers ───────────────────────────────────────────────────────────────
 
-function FadeIn({ children, delay = 0, className = '' }) {
+function FadeIn({ children, delay = 0, className = '', y = 24 }) {
   const ref = useRef()
   const inView = useInView(ref, { once: true, margin: '-80px' })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] }}
       className={className}
     >
       {children}
@@ -61,505 +31,372 @@ function FadeIn({ children, delay = 0, className = '' }) {
   )
 }
 
-function AnimatedHeadline({ words, className }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-40px' })
-  return (
-    <h1 ref={ref} className={className}>
-      {words.map((word, i) => (
-        <motion.span
-          key={i}
-          className="inline-block mr-[0.25em]"
-          initial={{ opacity: 0, y: 18 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </h1>
-  )
-}
-
-function EcosystemSection() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-
-  const nodes = [
-    {
-      id: 'labs',
-      label: 'Cephalo Labs',
-      sub: 'The company',
-      center: true,
-    },
-    {
-      id: 'polypus',
-      label: 'Polypus',
-      sub: 'AI coding orchestrator',
-      note: 'Like Claude Code, but multi-model',
-      href: '/products',
-    },
-    {
-      id: 'app',
-      label: 'Cephalo App',
-      sub: 'The AI workspace',
-      note: 'Chat, code, create — coming soon',
-      href: '/contact',
-    },
-    {
-      id: 'pantheon',
-      label: 'Pantheon Growth',
-      sub: 'Agency partner',
-      note: 'Strategy & growth execution',
-      href: '/partners',
-    },
-  ]
-
-  return (
-    <section className="py-32 bg-white border-t border-gray-100">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <FadeIn>
-          <span className="text-xs font-medium tracking-widest uppercase text-gray-400 block mb-3">
-            The Ecosystem
-          </span>
-          <h2 className="font-sans font-semibold text-[clamp(2rem,4vw,3.5rem)] tracking-tight mb-4">
-            Everything connects.
-          </h2>
-          <p className="text-gray-500 text-lg max-w-xl mb-20">
-            One lab. Multiple products. One agency partner. All built to reinforce each other.
-          </p>
-        </FadeIn>
-
-        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200">
-          {nodes.map((node, i) => (
-            <motion.div
-              key={node.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-              className={`bg-white p-10 flex flex-col gap-3${node.center ? ' bg-gray-50' : ''}`}
-            >
-              {node.center && (
-                <span className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-1">
-                  Core
-                </span>
-              )}
-              <h3 className="font-sans font-semibold text-xl tracking-tight text-black">
-                {node.label}
-              </h3>
-              <p className="text-xs font-medium tracking-widest uppercase text-gray-400">
-                {node.sub}
-              </p>
-              {node.note && (
-                <p className="text-sm text-gray-500 mt-1">{node.note}</p>
-              )}
-              {node.href && (
-                <Link
-                  to={node.href}
-                  className="text-xs font-medium tracking-widest uppercase text-black border-b border-gray-200 pb-0.5 self-start mt-auto hover:border-black transition-colors duration-200"
-                >
-                  Learn more →
-                </Link>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function CephaloAppTeaser() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-
-  return (
-    <section className="py-32 bg-[#0A0A0A] text-white relative overflow-hidden">
-      {/* Purple blob */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)' }}
-      />
-      {/* Emerald blob */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-40 -right-40 w-[400px] h-[400px] rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)' }}
-      />
-
-      <div ref={ref} className="max-w-7xl mx-auto px-6 lg:px-12 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          {/* Left: copy */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 border border-white/10 px-4 py-2 mb-8"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7C3AED] inline-block" />
-              <span className="text-xs font-medium tracking-widest uppercase text-white/50">
-                In development
-              </span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-sans font-semibold text-[clamp(2rem,4vw,3.5rem)] tracking-tight text-white mb-6 leading-tight"
-            >
-              One app. Every AI model. Unlimited capability.
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-white/50 text-lg max-w-lg mb-10 leading-relaxed"
-            >
-              Cephalo is the AI workspace built for people who build.
-              Chat with any model. Orchestrate agents. Ship with Polypus.
-              Everything in one place.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm font-medium tracking-widest uppercase hover:bg-white/90 transition-colors duration-200"
-              >
-                Join the waitlist
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Right: Polypus mascot */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            className="flex items-center justify-center"
-          >
-            <div className="relative">
-              <img
-                src="/logos/polypus-mark.png"
-                alt="Polypus"
-                className="w-40 h-40 object-contain opacity-60"
-                onError={(e) => { e.currentTarget.style.display = 'none' }}
-              />
-              <div
-                className="absolute inset-0 rounded-full"
-                style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%)' }}
-                aria-hidden="true"
-              />
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function VSLSection() {
-  const containerRef = useRef(null)
+function TiltSection({ children, className = '' }) {
+  const ref = useRef()
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: ref,
     offset: ['start end', 'end start'],
   })
-
-  const s1Op = useTransform(scrollYProgress, [0.02, 0.12, 0.24], [0, 1, 0])
-  const s1Y  = useTransform(scrollYProgress, [0.02, 0.12], [24, 0])
-  const s2Op = useTransform(scrollYProgress, [0.20, 0.30, 0.42], [0, 1, 0])
-  const s2Y  = useTransform(scrollYProgress, [0.20, 0.30], [24, 0])
-  const s3Op = useTransform(scrollYProgress, [0.38, 0.48, 0.60], [0, 1, 0])
-  const s3Y  = useTransform(scrollYProgress, [0.38, 0.48], [24, 0])
-  const s4Op = useTransform(scrollYProgress, [0.58, 0.68, 1.0], [0, 1, 1])
-  const s4Y  = useTransform(scrollYProgress, [0.58, 0.68], [24, 0])
-
-  const models = ['Haiku', 'Sonnet', 'Opus']
-
+  const rotateX = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [5, 0, 0, -5])
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
+  const y = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [40, 0, 0, -40])
   return (
-    <section
-      ref={containerRef}
-      className="relative bg-black"
-      style={{ height: '300vh' }}
+    <motion.section
+      ref={ref}
+      style={{ rotateX, opacity, y, transformPerspective: 1400 }}
+      className={`relative ${className}`}
     >
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-        <div className="max-w-3xl mx-auto px-6 w-full relative" style={{ height: '100%' }}>
-
-          {/* Step 1 */}
-          <motion.div
-            style={{ opacity: s1Op, y: s1Y }}
-            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
-          >
-            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
-              You have a task.
-            </p>
-          </motion.div>
-
-          {/* Step 2 */}
-          <motion.div
-            style={{ opacity: s2Op, y: s2Y }}
-            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
-          >
-            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
-              Polypus routes it to the right model.
-            </p>
-            <div className="flex items-center justify-center gap-4 mt-10">
-              {models.map((m) => (
-                <div key={m} className="border border-white/10 px-6 py-3">
-                  <span className="text-xs font-medium tracking-widest uppercase text-white/60">{m}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Step 3 */}
-          <motion.div
-            style={{ opacity: s3Op, y: s3Y }}
-            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
-          >
-            <p className="font-sans font-light text-white text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-tight">
-              Agents execute in parallel.
-            </p>
-          </motion.div>
-
-          {/* Step 4 */}
-          <motion.div
-            style={{ opacity: s4Op, y: s4Y }}
-            className="absolute inset-x-6 top-1/2 -translate-y-1/2 text-center pointer-events-none"
-          >
-            <p className="font-sans font-semibold text-white text-[clamp(2rem,5vw,4rem)] tracking-tight leading-tight mb-4">
-              Done.
-            </p>
-            <p className="text-white/40 text-base font-light tracking-wider">
-              Faster. Smarter. One orchestrator.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* fade edges */}
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black to-transparent pointer-events-none" />
-      </div>
-    </section>
+      {children}
+    </motion.section>
   )
 }
 
+// ── page ──────────────────────────────────────────────────────────────────
+
 export default function Home() {
-  useMeta('Cephalo Labs — AI Developer Agency', 'We build AI products, deploy AI infrastructure, and operate as a full-spectrum AI developer agency based in Coimbra, Portugal.')
+  useMeta(
+    'CEPHALO Labs — We build intelligence. 2026',
+    'An AI studio. We build AI products, deploy intelligent infrastructure, and ship at the frontier of what AI can do.'
+  )
+
   return (
     <PageWrapper>
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* 3D Background */}
-        <div className="absolute inset-0 z-0 opacity-[0.35]">
-          <Suspense fallback={null}>
-            <NeuralScene />
-          </Suspense>
-        </div>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-white/0 via-white/20 to-white pointer-events-none" />
+      {/* ── HERO · dark cinematic ────────────────────────────────────── */}
+      <section className="relative min-h-screen bg-ink-950 flex items-center overflow-hidden -mt-16 pt-24">
+        <HeroBg />
+        <BackgroundPattern variant="neural" tone="dark" opacity={0.16} />
+        <div className="absolute inset-0 bg-grid-faint pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[600px] rounded-full pointer-events-none opacity-60"
+          style={{ background: 'radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%)' }} />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink-950 to-transparent pointer-events-none" />
 
-        <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-12 py-32">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 py-28 w-full text-center">
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="flex items-center justify-center gap-2 mb-12"
           >
-            {/* Label */}
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 border border-gray-200 px-4 py-2 mb-10"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-black inline-block" />
-              <span className="text-xs font-medium tracking-widest uppercase text-gray-600">
-                AI Developer Agency — Coimbra, Portugal
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 px-4 py-2 bg-white/[0.02]">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse-soft" />
+              <span className="text-[10px] font-medium tracking-[0.3em] uppercase text-white/50">
+                AI Developer Studio · Est. 2026
               </span>
-            </motion.div>
+            </span>
+          </motion.div>
 
-            {/* Headline */}
-            <AnimatedHeadline
-              words={['We', 'build', 'intelligent', 'systems.']}
-              className="font-sans font-semibold text-[clamp(3rem,8vw,7rem)] tracking-tight leading-[1.0] text-black mb-8"
+          <h1 className="font-sans font-semibold text-[clamp(3.5rem,9vw,8rem)] tracking-tightest leading-[0.88] text-white mb-8">
+            {['We', 'build', 'intelligence.'].map((word, i) => (
+              <motion.span key={i} className="inline-block mr-[0.18em]"
+                initial={{ opacity: 0, y: 28, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.75, delay: 0.3 + i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}>
+                {word}
+              </motion.span>
+            ))}
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.7 }}
+            className="text-white/30 text-sm md:text-base tracking-[0.32em] uppercase font-light mb-10"
+          >
+            Products · Systems · Results
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.82 }}
+            className="text-white/55 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-12 font-light"
+          >
+            Most AI looks great in a demo. Then breaks in production.<br/>
+            <span className="text-white/80">We ship the other kind.</span>
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.95 }}
+            className="flex flex-wrap gap-3 justify-center mb-16"
+          >
+            <Link to="/products"
+              className="group inline-flex items-center gap-2 px-7 py-3.5 bg-white text-ink-950 text-[11px] font-medium tracking-[0.22em] uppercase hover:bg-white/90 active:scale-[0.98] transition-all">
+              See the products
+              <span className="w-7 h-7 rounded-full bg-ink-950/10 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-[0.5px] transition-transform">
+                <ArrowRight size={11} />
+              </span>
+            </Link>
+            <Link to="/contact"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border border-white/15 text-white/80 text-[11px] font-medium tracking-[0.22em] uppercase hover:border-white/40 hover:text-white active:scale-[0.98] transition-all">
+              Work with us
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0)' }}
+            transition={{ duration: 0.9, delay: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            <VideoHero
+              src="/videos/cephalo-labs-v4.mp4"
+              poster="/videos/cephalo-labs-poster.png"
+              accent="rgba(192,132,252,0.35)"
+              label="Watch · CEPHALO · 32s"
             />
-
-            {/* Sub */}
-            <p className="text-lg text-gray-500 max-w-xl leading-relaxed mb-12 font-light">
-              Cephalo Labs is an AI developer agency building proprietary AI products,
-              deploying intelligent infrastructure, and operating at the frontier of
-              what AI can do.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/projects"
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-black text-white text-sm font-medium tracking-wider uppercase hover:bg-gray-800 transition-colors duration-200"
-              >
-                See our work
-                <ArrowRight size={14} />
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-7 py-3.5 border border-gray-200 text-black text-sm font-medium tracking-wider uppercase hover:border-black transition-colors duration-200"
-              >
-                Work with us
-              </Link>
-            </div>
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          <span className="text-xs font-medium tracking-widest uppercase text-gray-400">Scroll</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <ArrowDown size={14} className="text-gray-400" />
-          </motion.div>
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-[1px] h-8 bg-white/20"
+          />
         </motion.div>
-
-        {/* Bottom line */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-gray-100" />
       </section>
 
-      {/* THREE PILLARS */}
-      <section className="py-32 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <FadeIn>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-16">What we do</p>
+      {/* ── MARQUEE ─────────────────────────────────────────────────── */}
+      <Marquee dark speed={32} />
+
+      {/* ── PRODUCTS · light paper ───────────────────────────────────── */}
+      <TiltSection className="py-32 bg-[var(--paper)] overflow-hidden">
+        <BackgroundPattern variant="neural" tone="paper" opacity={0.07} />
+        <div className="absolute inset-0 bg-grid-paper pointer-events-none opacity-60" />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+          <FadeIn className="mb-20">
+            <span className="tag-eyebrow text-ink-950/50 block mb-6">What we build · 2026</span>
+            <h2 className="font-sans font-semibold text-[clamp(2rem,4.5vw,4.5rem)] tracking-tightest text-ink-950 max-w-4xl leading-[0.92]">
+              Two products.<br/>
+              <span className="text-ink-950/35">One philosophy.</span>
+            </h2>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-200">
-            {pillars.map((p, i) => (
-              <FadeIn key={p.number} delay={i * 0.1}>
-                <div className={`p-10 ${i < 2 ? 'md:border-r border-gray-200' : ''} border-b md:border-b-0 border-gray-200`}>
-                  <span className="text-xs font-mono text-gray-300 mb-6 block">{p.number}</span>
-                  <h3 className="text-2xl font-medium text-black mb-4">{p.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Polypus card */}
+            <FadeIn delay={0.08}>
+              <Link to="/products/polypus"
+                className="group block relative h-full p-10 md:p-12 rounded-3xl bg-ink-950 overflow-hidden hover:bg-ink-900 transition-colors">
+                <div className="absolute inset-0 opacity-60 pointer-events-none"
+                  style={{ background: `radial-gradient(ellipse at 30% 20%, ${PURPLE}22 0%, transparent 60%)` }} />
+                <div className="absolute inset-0 bg-grid-faint opacity-50 pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-8">
+                    <img src="/logos/polypus-mark.svg" alt="Polypus"
+                      className="w-10 h-10 object-contain"
+                      onError={e => { e.currentTarget.style.display = 'none' }} />
+                    <span className="tag-eyebrow" style={{ color: PURPLE + 'CC' }}>Polypus · The orchestrator</span>
+                  </div>
+                  <h3 className="font-sans font-semibold text-3xl md:text-4xl text-white mb-4 tracking-tightest">
+                    One interface.<br/>
+                    <span className="text-white/40">Every AI model.</span>
+                  </h3>
+                  <p className="text-white/55 leading-relaxed font-light mb-10 max-w-md">
+                    Routes every task to the right model. Keeps memory alive across sessions. Spawns agents in parallel.
+                  </p>
+
+                  <div className="space-y-0 mb-10 max-w-md border-t border-white/5">
+                    {[
+                      { icon: Brain,  t: 'Adaptive routing' },
+                      { icon: Layers, t: 'Persistent memory' },
+                      { icon: Zap,    t: 'Agent spawner' },
+                    ].map(f => (
+                      <div key={f.t} className="flex items-center gap-3 py-3 border-b border-white/5">
+                        <f.icon size={13} style={{ color: PURPLE, opacity: 0.7 }} />
+                        <span className="text-sm text-white/65 font-light">{f.t}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <span className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.22em] uppercase group-hover:gap-3 transition-all"
+                    style={{ color: PURPLE }}>
+                    Discover Polypus <ArrowRight size={12} />
+                  </span>
                 </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <EcosystemSection />
-
-      <CephaloAppTeaser />
-
-      <VSLSection />
-
-      {/* FEATURED WORK */}
-      <section className="py-32 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-end justify-between mb-16">
-            <FadeIn>
-              <p className="text-xs font-medium tracking-widest uppercase text-gray-400">Featured work</p>
+              </Link>
             </FadeIn>
-            <FadeIn>
-              <Link to="/projects" className="text-xs font-medium tracking-wider uppercase text-gray-400 hover:text-black transition-colors flex items-center gap-1">
-                All projects <ArrowRight size={12} />
+
+            {/* Kernel card */}
+            <FadeIn delay={0.14}>
+              <Link to="/products/kernel"
+                className="group block relative h-full p-10 md:p-12 rounded-3xl bg-ink-950 overflow-hidden hover:bg-ink-900 transition-colors">
+                <div className="absolute inset-0 opacity-60 pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse at 70% 20%, rgba(255,255,255,0.06) 0%, transparent 60%)' }} />
+                <div className="absolute inset-0 bg-grid-faint opacity-50 pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/15">
+                      <KernelMark className="w-6 h-6 text-white/90" />
+                    </div>
+                    <span className="tag-eyebrow text-white/70">Kernel · In Development · 2026</span>
+                  </div>
+                  <h3 className="font-sans font-semibold text-3xl md:text-4xl text-white mb-4 tracking-tightest">
+                    70% less tokens.<br/>
+                    <span className="text-white/40">Same outputs.</span>
+                  </h3>
+                  <p className="text-white/55 leading-relaxed font-light mb-10 max-w-md">
+                    The invisible layer between your app and every AI model. Compresses, decomposes, routes — without rewriting a single prompt.
+                  </p>
+
+                  <div className="space-y-0 mb-10 max-w-md border-t border-white/5">
+                    {[
+                      { icon: Scissors, t: 'Task decomposition' },
+                      { icon: Gauge,    t: 'Token compression' },
+                      { icon: ShieldCheck, t: '40% cost-saving guarantee' },
+                    ].map(f => (
+                      <div key={f.t} className="flex items-center gap-3 py-3 border-b border-white/5">
+                        <f.icon size={13} className="text-white/60" />
+                        <span className="text-sm text-white/65 font-light">{f.t}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <span className="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.22em] uppercase text-white group-hover:gap-3 transition-all">
+                    Discover Kernel <ArrowRight size={12} />
+                  </span>
+                </div>
               </Link>
             </FadeIn>
           </div>
+        </div>
+      </TiltSection>
 
-          <div className="space-y-0">
-            {featuredProjects.map((p, i) => (
-              <FadeIn key={p.name} delay={i * 0.08}>
-                <Link
-                  to={`/projects/${p.slug}`}
-                  className="group flex flex-col md:flex-row md:items-center justify-between py-10 border-b border-gray-100 hover:border-gray-300 transition-colors duration-300"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
-                    <span className="text-xs font-mono text-gray-300 w-6">{String(i + 1).padStart(2, '0')}</span>
-                    <div>
-                      <h3 className="text-xl font-medium text-black group-hover:text-gray-600 transition-colors mb-1">{p.name}</h3>
-                      <p className="text-xs text-gray-400 tracking-wider uppercase">{p.type}</p>
-                    </div>
+      {/* ── PRINCIPLES · dark ────────────────────────────────────────── */}
+      <TiltSection className="py-32 bg-ink-950 overflow-hidden border-y border-white/5">
+        <BackgroundPattern variant="wave" tone="dark" opacity={0.07} />
+        <div className="absolute inset-0 bg-grid-faint pointer-events-none opacity-40" />
+
+        <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
+          <FadeIn>
+            <span className="tag-eyebrow text-white/40 block mb-6">How we build</span>
+            <h2 className="font-sans font-semibold text-[clamp(2rem,4.5vw,4rem)] tracking-tightest text-white mb-20 max-w-3xl leading-[0.92]">
+              We do not design<br/>AI that looks smart.<br/>
+              <span className="text-white/30">We ship AI that earns its keep.</span>
+            </h2>
+          </FadeIn>
+
+          {[
+            { n: '01', t: 'We build for ourselves first.',   d: 'Every tool we sell, we use. If we would not bet our own workflow on it, we will not ask you to.' },
+            { n: '02', t: 'We are builders, not consultants.', d: 'No slide decks. No roadmaps without code behind them. Every engagement ends with software running in production.' },
+            { n: '03', t: 'Research meets execution.',         d: 'The depth of a lab. The speed of a studio. Both, in the same week.' },
+          ].map((p, i) => (
+            <FadeIn key={p.n} delay={i * 0.1}>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 py-10 border-b border-white/5 group">
+                <div className="md:col-span-1 font-mono text-xs text-white/25 tracking-[0.12em] pt-1">{p.n}</div>
+                <div className="md:col-span-6">
+                  <h3 className="text-2xl md:text-3xl font-medium text-white leading-tight tracking-tight">
+                    {p.t}
+                  </h3>
+                </div>
+                <div className="md:col-span-5">
+                  <p className="text-base text-white/50 leading-relaxed font-light">{p.d}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </TiltSection>
+
+      {/* ── PANTHEON case teaser · light paper ───────────────────────── */}
+      <TiltSection className="py-32 bg-[var(--paper-2)] overflow-hidden">
+        <BackgroundPattern variant="neural" tone="paper" opacity={0.05} />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <FadeIn>
+              <span className="tag-eyebrow text-ink-950/60 block mb-6">Proof · Pantheon Growth</span>
+              <h2 className="font-sans font-semibold text-[clamp(2rem,4vw,4rem)] tracking-tightest text-ink-950 leading-[0.92] mb-8">
+                We built the stack<br/>
+                that generated<br/>
+                <span className="text-ink-950/45">$400K+ in revenue.</span>
+              </h2>
+              <p className="text-ink-950/60 leading-relaxed font-light text-base md:text-lg max-w-md mb-10">
+                Pantheon Growth runs entirely on CEPHALO infrastructure. Same founder. Same standard. The thesis — proven in production.
+              </p>
+              <Link to="/partners"
+                className="group inline-flex items-center gap-2 px-6 py-3.5 bg-ink-950 text-white text-[11px] font-medium tracking-[0.22em] uppercase hover:bg-ink-900 active:scale-[0.98] transition-all">
+                See the case
+                <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-[0.5px] transition-transform">
+                  <ArrowRight size={11} />
+                </span>
+              </Link>
+            </FadeIn>
+
+            <FadeIn delay={0.12}>
+              <div className="grid grid-cols-2 gap-px bg-ink-950/10 rounded-2xl overflow-hidden">
+                {[
+                  { v: '$400K+', l: 'Revenue generated' },
+                  { v: '14×',    l: 'Long-run ROAS' },
+                  { v: '340%',   l: 'Lead growth · 90 days' },
+                  { v: '80%',    l: 'Manual ops reduced' },
+                ].map(s => (
+                  <div key={s.l} className="bg-[var(--paper)] p-8 text-center">
+                    <p className="font-sans font-semibold text-3xl md:text-4xl text-ink-950 mb-2 tracking-tightest">
+                      {s.v}
+                    </p>
+                    <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-ink-950/50">{s.l}</p>
                   </div>
-                  <div className="flex items-center gap-8 mt-4 md:mt-0">
-                    <p className="text-sm text-gray-500 max-w-sm hidden lg:block">{p.description}</p>
-                    <ArrowRight size={16} className="text-gray-300 group-hover:text-black group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
-                  </div>
-                </Link>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </TiltSection>
+
+      {/* ── STATS · dark ─────────────────────────────────────────────── */}
+      <TiltSection className="py-28 bg-ink-950 border-y border-white/5 overflow-hidden">
+        <BackgroundPattern variant="dots" tone="dark" opacity={0.06} />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+          <FadeIn className="mb-10">
+            <span className="tag-eyebrow text-white/40">By the numbers · 2026</span>
+          </FadeIn>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 rounded-xl overflow-hidden">
+            {[
+              { prefix: '$', to: 400, suffix: 'K+', label: 'Generated in production' },
+              { prefix: '',  to: 70,  suffix: '%',  label: 'Token reduction · Kernel' },
+              { prefix: '',  to: 14,  suffix: '×',  label: 'Long-run ROAS · Pantheon' },
+              { value: '2026',                       label: 'Year founded' },
+            ].map((s, i) => (
+              <FadeIn key={s.label} delay={i * 0.07} className="bg-ink-950 p-10 text-center">
+                <p className="font-sans font-semibold text-4xl lg:text-5xl text-white mb-3 tracking-tightest">
+                  {s.value ? s.value : (
+                    <>{s.prefix}<CountUp to={s.to} />{s.suffix}</>
+                  )}
+                </p>
+                <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-white/30">{s.label}</p>
               </FadeIn>
             ))}
           </div>
         </div>
-      </section>
+      </TiltSection>
 
-      {/* PRODUCT SPOTLIGHT — POLYPUS */}
-      <section className="py-32 border-b border-gray-100 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <FadeIn>
-              <div>
-                <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-6">Flagship product</p>
-                <h2 className="font-sans font-semibold text-5xl text-black mb-6 leading-tight tracking-tight">Polypus</h2>
-                <p className="text-gray-500 leading-relaxed mb-8">
-                  The AI orchestration layer your workflow has been missing.
-                  Model routing, persistent memory, autonomous agents —
-                  all wrapped in a VS Code-inspired interface built for builders.
-                </p>
-                <p className="text-xs text-gray-400 tracking-wider uppercase mb-8">Status: In Development</p>
-                <Link
-                  to="/products"
-                  className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase border-b border-black pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors"
-                >
-                  Learn more <ArrowRight size={12} />
-                </Link>
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.15}>
-              <div className="aspect-square bg-white border border-gray-200 flex items-center justify-center">
-                <img
-                  src="/logos/polypus-mark.png"
-                  alt="Polypus"
-                  className="w-32 h-32 object-contain"
-                  onError={e => {
-                    e.target.parentElement.innerHTML = '<div class="text-6xl font-sans font-semibold text-gray-100">P</div>'
-                  }}
-                />
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA STRIP */}
-      <section className="py-32">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+      {/* ── CTA · light paper ────────────────────────────────────────── */}
+      <TiltSection className="py-40 bg-[var(--paper)] overflow-hidden">
+        <BackgroundPattern variant="neural" tone="paper" opacity={0.07} />
+        <div className="absolute inset-0 bg-grid-paper pointer-events-none opacity-60" />
+        <div className="relative max-w-3xl mx-auto px-6 lg:px-12 text-center">
           <FadeIn>
-            <h2 className="font-sans font-semibold text-[clamp(2.5rem,5vw,4.5rem)] text-black mb-6 leading-tight tracking-tight">
-              Ready to build<br />with intelligence?
+            <span className="tag-eyebrow text-ink-950/50 block mb-10">Let's talk · 2026</span>
+            <h2 className="font-sans font-semibold text-[clamp(2.5rem,5vw,5.5rem)] text-ink-950 mb-10 leading-[0.92] tracking-tightest">
+              Bring us<br/>
+              <span className="text-ink-950/35">a hard problem.</span>
             </h2>
-            <p className="text-gray-500 mb-10 max-w-lg mx-auto">
-              Whether you need AI products built from scratch or intelligent systems deployed into your business — we do both.
+            <p className="text-ink-950/55 mb-12 max-w-lg mx-auto leading-relaxed font-light text-base md:text-lg">
+              The ones where the team has been stuck. The pipelines that keep losing money. The AI bills that should be cheaper.
             </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white text-sm font-medium tracking-wider uppercase hover:bg-gray-800 transition-colors"
-            >
-              Start a conversation <ArrowRight size={14} />
+            <Link to="/contact"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-ink-950 text-white text-[11px] font-medium tracking-[0.22em] uppercase hover:bg-ink-900 active:scale-[0.98] transition-all">
+              Start a conversation
+              <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-[0.5px] transition-transform">
+                <ArrowRight size={11} />
+              </span>
             </Link>
           </FadeIn>
         </div>
-      </section>
+      </TiltSection>
+
     </PageWrapper>
   )
 }

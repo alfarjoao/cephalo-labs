@@ -7,12 +7,12 @@ function NewsletterForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (email) setDone(true)
+    if (!email) return
+    window.location.href = `mailto:hello@cephalon.ai?subject=Newsletter signup&body=Add me to the CEPHALO newsletter: ${email}`
+    setDone(true)
   }
 
-  if (done) {
-    return <p className="text-xs text-gray-500">You're on the list.</p>
-  }
+  if (done) return <p className="text-xs text-white/40">You're on the list.</p>
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -22,11 +22,11 @@ function NewsletterForm() {
         onChange={e => setEmail(e.target.value)}
         placeholder="your@email.com"
         required
-        className="text-sm border-b border-gray-200 py-2 bg-transparent text-black placeholder:text-gray-300 outline-none focus:border-black transition-colors duration-200 w-full"
+        className="text-sm border-b border-white/15 py-2 bg-transparent text-white placeholder:text-white/20 outline-none focus:border-white/60 transition-colors w-full"
       />
       <button
         type="submit"
-        className="text-xs font-medium tracking-widest uppercase text-black self-start mt-1 hover:text-gray-500 transition-colors duration-200"
+        className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/70 self-start mt-1 hover:text-white transition-colors"
       >
         Join waitlist →
       </button>
@@ -35,39 +35,47 @@ function NewsletterForm() {
 }
 
 export default function Footer() {
+  const year = new Date().getFullYear()
   return (
-    <footer className="border-t border-gray-200 bg-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+    <footer className="relative border-t border-white/5 bg-ink-950 text-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link to="/" className="inline-flex items-center gap-3 mb-4">
-              <img src="/logos/cephalo-mark.png" alt="Cephalo" className="w-6 h-6 object-contain" onError={e => e.target.style.display='none'} />
-              <span className="text-xs font-medium tracking-widest uppercase">Cephalo Labs</span>
+            <Link to="/" className="inline-flex items-center gap-3 mb-5">
+              <img
+                src="/logos/cephalo-mark.png"
+                alt="Cephalo"
+                className="w-6 h-6 object-contain brightness-0 invert opacity-80"
+                onError={e => { e.currentTarget.style.display = 'none' }}
+              />
+              <span className="text-[11px] font-medium tracking-[0.24em] uppercase text-white/80">
+                CEPHALO Labs
+              </span>
             </Link>
-            <p className="text-sm text-gray-400 leading-relaxed max-w-xs mt-4">
+            <p className="text-sm text-white/45 leading-relaxed max-w-xs mt-4">
               We build AI. We deploy AI. We are AI.<br/>
-              An AI developer agency building the next generation of intelligent systems.
+              An AI developer studio building the next generation of intelligent systems.
             </p>
-            <p className="text-xs text-gray-300 mt-6">Coimbra & Porto, Portugal</p>
+            <p className="text-[11px] text-white/25 tracking-wider mt-6">Portugal · Est. 2026</p>
 
             <div className="mt-6 flex items-center gap-3">
               <img
-                src="/logos/polypus-mark.png"
+                src="/logos/polypus-mark.svg"
                 alt="Polypus"
-                className="w-8 h-8 object-contain opacity-60"
+                className="w-8 h-8 object-contain opacity-70"
                 onError={(e) => { e.currentTarget.style.display = 'none' }}
               />
               <div>
-                <p className="text-xs font-medium text-gray-600">Polypus</p>
-                <p className="text-xs text-gray-400">A Cephalo Labs product</p>
+                <p className="text-xs font-medium text-white/70">Polypus</p>
+                <p className="text-[11px] text-white/30">A CEPHALO Labs product</p>
               </div>
             </div>
           </div>
 
           {/* Company */}
           <div>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-4">Company</p>
+            <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/40 mb-4">Company</p>
             <nav className="flex flex-col gap-3">
               {[
                 { href: '/about', label: 'About' },
@@ -75,42 +83,41 @@ export default function Footer() {
                 { href: '/partners', label: 'Partners' },
                 { href: '/contact', label: 'Contact' },
               ].map(l => (
-                <Link key={l.href} to={l.href} className="text-sm text-gray-500 hover:text-black transition-colors">{l.label}</Link>
+                <Link key={l.href} to={l.href} className="text-sm text-white/55 hover:text-white transition-colors">
+                  {l.label}
+                </Link>
               ))}
             </nav>
           </div>
 
-          {/* Work */}
+          {/* Products */}
           <div>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-4">Work</p>
+            <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/40 mb-4">Products</p>
             <nav className="flex flex-col gap-3">
               {[
-                { href: '/products', label: 'Products' },
-                { href: '/projects', label: 'Projects' },
+                { href: '/products',         label: 'Overview' },
+                { href: '/products/polypus', label: 'Polypus' },
+                { href: '/products/kernel',  label: 'Kernel' },
               ].map(l => (
-                <Link key={l.href} to={l.href} className="text-sm text-gray-500 hover:text-black transition-colors">{l.label}</Link>
-              ))}
-              <li className="list-none">
-                <Link to="/contact" className="text-sm text-gray-500 hover:text-black transition-colors duration-200 inline-flex items-center gap-2">
-                  Cephalo App
-                  <span className="text-[10px] font-medium tracking-widest uppercase text-gray-300 border border-gray-200 px-1.5 py-0.5 leading-none">
-                    Soon
-                  </span>
+                <Link key={l.href} to={l.href} className="text-sm text-white/55 hover:text-white transition-colors">
+                  {l.label}
                 </Link>
-              </li>
+              ))}
             </nav>
           </div>
 
           {/* Newsletter */}
           <div>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-4">Stay in the loop</p>
+            <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/40 mb-4">Stay in the loop</p>
             <NewsletterForm />
           </div>
         </div>
 
-        <div className="border-t border-gray-100 mt-12 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <p className="text-xs text-gray-300">© {new Date().getFullYear()} Cephalo Labs. All rights reserved.</p>
-          <p className="text-xs text-gray-300">pantheongrowth@gmail.com</p>
+        <div className="border-t border-white/5 mt-14 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <p className="text-[11px] text-white/25 tracking-wider">© {year} CEPHALO Labs. All rights reserved.</p>
+          <a href="mailto:hello@cephalon.ai" className="text-[11px] text-white/35 hover:text-white tracking-wider transition-colors">
+            hello@cephalon.ai
+          </a>
         </div>
       </div>
     </footer>

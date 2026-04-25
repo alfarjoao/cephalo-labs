@@ -1,130 +1,249 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Brain, Gauge, Layers, Scissors } from 'lucide-react'
 import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
-import AnimatedBackground from '../components/ui/AnimatedBackground'
+import BackgroundPattern from '../components/ui/BackgroundPattern'
 
-function FadeIn({ children, delay = 0, className = '' }) {
+const PURPLE = '#C084FC'
+const NEUTRAL = '#F5F5F0'
+
+function FadeIn({ children, delay = 0, className = '', y = 22 }) {
   const ref = useRef()
-  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const inView = useInView(ref, { once: true, margin: '-80px' })
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }} className={className}>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.75, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      className={className}
+    >
       {children}
     </motion.div>
   )
 }
 
+const products = [
+  {
+    slug: 'polypus',
+    name: 'Polypus',
+    tagline: 'The orchestrator.',
+    status: 'In Development · 2026',
+    body: 'One interface. Every AI model. Polypus routes each task to the right model — automatically — and keeps every session alive across hot, warm, and cold memory layers.',
+    features: [
+      { icon: Brain, t: 'Adaptive routing — Haiku / Sonnet / Opus / GPT / Gemini / local' },
+      { icon: Layers, t: 'Persistent memory — hot, warm, cold' },
+      { icon: Gauge, t: 'Agent spawner — parallel execution' },
+      { icon: Scissors, t: 'Skill registry — install on demand' },
+    ],
+    accent: PURPLE,
+    href: '/products/polypus',
+    logo: '/logos/polypus-mark.svg',
+  },
+  {
+    slug: 'kernel',
+    name: 'Kernel',
+    tagline: 'The optimisation layer.',
+    status: 'In Development · 2026',
+    body: 'The invisible layer between your application and every AI model. Seventy percent fewer tokens. Four times faster. Seventy-three percent cheaper. Same outputs. No rewrites.',
+    features: [
+      { icon: Scissors, t: 'Task decomposition — automatic' },
+      { icon: Layers, t: 'Intelligent memory — three tiers' },
+      { icon: Gauge, t: 'Token compression — 70–85% reduction' },
+      { icon: Brain, t: 'Adaptive routing — local vs cloud' },
+    ],
+    accent: NEUTRAL,
+    href: '/products/kernel',
+    logo: '/logos/kernel-mark.svg',
+  },
+]
+
 export default function Products() {
-  useMeta('Products — Cephalo Labs', 'Polypus — the AI orchestration layer. Multi-model, multi-agent, built for builders.')
+  useMeta(
+    'Products — CEPHALO Labs',
+    'Polypus — the orchestrator. Kernel — the optimisation layer. Two products that make AI work like it should.'
+  )
+
   return (
     <PageWrapper>
-      <section className="relative overflow-hidden py-32 border-b border-gray-100">
-        <AnimatedBackground opacity={0.06} />
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-8">Products</p>
-            <h1 className="font-sans font-semibold tracking-tight text-[clamp(3rem,6vw,5rem)] leading-[0.95] text-black max-w-2xl mb-8">
-              Built by us.<br />Available for you.
+      {/* ── HERO — light paper base ──────────────────────────────────── */}
+      <section className="relative py-40 overflow-hidden bg-[var(--paper)] -mt-16 pt-44">
+        <BackgroundPattern variant="neural" tone="paper" opacity={0.08} />
+        <div className="absolute inset-0 bg-grid-paper pointer-events-none opacity-60" />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85 }}
+          >
+            <span className="tag-eyebrow text-ink-950/50 block mb-10">Products · 2026</span>
+            <h1 className="font-sans font-semibold tracking-tightest text-[clamp(3rem,7vw,6.5rem)] leading-[0.88] text-ink-950 max-w-4xl mb-10">
+              Two products.<br/>
+              <span className="text-ink-950/30">One thesis.</span>
             </h1>
-            <p className="text-lg text-gray-500 max-w-xl leading-relaxed font-light">
-              Our products start as internal tools. When they become powerful enough to change how others work, we ship them.
+            <p className="text-lg md:text-xl text-ink-950/60 max-w-2xl leading-relaxed font-light">
+              Most AI tools demo well and break in production. Ours are the other kind — built for ourselves first, then shipped to the people who build for a living.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Polypus — featured */}
-      <section className="py-24 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <FadeIn>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <img src="/logos/polypus-mark.png" alt="Polypus" className="w-10 h-10 object-contain"
-                    onError={e => e.target.style.display='none'} />
-                  <div>
-                    <h2 className="text-2xl font-medium text-black">Polypus</h2>
-                    <p className="text-xs text-gray-400 tracking-wider uppercase mt-0.5">by Cephalo Labs</p>
+      {/* ── PRODUCT CARDS — alternating dark/light ───────────────────── */}
+      {products.map((p, i) => {
+        const dark = i % 2 === 0
+        return (
+          <section
+            key={p.slug}
+            className={`relative py-32 overflow-hidden border-b ${dark ? 'bg-ink-950 border-white/5' : 'bg-[var(--paper-2)] border-ink-950/5'}`}
+          >
+            <BackgroundPattern
+              variant={dark ? 'orbit' : 'wave'}
+              tone={dark ? 'dark' : 'paper'}
+              opacity={dark ? 0.08 : 0.07}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: p.slug === 'polypus'
+                  ? `radial-gradient(ellipse at ${i % 2 === 0 ? '70%' : '30%'} 50%, ${p.accent}${dark ? '18' : '14'} 0%, transparent 65%)`
+                  : `radial-gradient(ellipse at ${i % 2 === 0 ? '70%' : '30%'} 50%, ${dark ? 'rgba(255,255,255,0.06)' : 'rgba(10,10,10,0.05)'} 0%, transparent 65%)`
+              }}
+            />
+            <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+              <div className={`grid grid-cols-1 lg:grid-cols-12 gap-14 items-center ${i % 2 ? 'lg:[direction:rtl]' : ''}`}>
+                {/* Copy */}
+                <FadeIn className="lg:col-span-7 [direction:ltr]">
+                  <div className="flex items-center gap-4 mb-8">
+                    {p.logo && (
+                      <img
+                        src={p.logo} alt={p.name}
+                        className="w-12 h-12 object-contain"
+                        onError={e => { e.currentTarget.style.display = 'none' }}
+                      />
+                    )}
+                    <div>
+                      <h2 className={`text-3xl md:text-4xl font-semibold tracking-tight ${dark ? 'text-white' : 'text-ink-950'}`}>
+                        {p.name}
+                      </h2>
+                      <p className="tag-eyebrow mt-1" style={{ color: p.accent + 'CC' }}>{p.status}</p>
+                    </div>
                   </div>
-                  <span className="ml-auto text-xs font-medium tracking-wider uppercase px-3 py-1 border border-gray-200 text-gray-400">
-                    In Development
-                  </span>
-                </div>
-
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  Polypus is the AI orchestration layer that makes every model smarter together.
-                  As a standalone tool, it works like Claude Code — but routes tasks intelligently
-                  across Haiku, Sonnet, and Opus based on complexity. As the engine inside Cephalo App,
-                  it powers every agent, every workflow, every session.
-                </p>
-
-                <div className="flex gap-3 mt-6 mb-8 flex-wrap">
-                  <div className="border border-[#7C3AED]/30 px-4 py-2">
-                    <span className="text-xs font-medium tracking-widest uppercase text-[#7C3AED]/70">Standalone tool</span>
+                  <p className={`text-xl md:text-2xl font-light mb-6 tracking-tight ${dark ? 'text-white/85' : 'text-ink-950'}`}>
+                    {p.tagline}
+                  </p>
+                  <p className={`text-base md:text-lg leading-relaxed font-light mb-10 max-w-2xl ${dark ? 'text-white/55' : 'text-ink-950/65'}`}>
+                    {p.body}
+                  </p>
+                  <div className={`space-y-0 mb-10 max-w-2xl border-t ${dark ? 'border-white/5' : 'border-ink-950/5'}`}>
+                    {p.features.map((f, j) => {
+                      const iconColor = p.slug === 'polypus'
+                        ? p.accent
+                        : (dark ? 'rgba(245,245,240,0.75)' : 'rgba(10,10,10,0.55)');
+                      return (
+                        <FadeIn key={f.t} delay={j * 0.05}>
+                          <div className={`flex items-center gap-4 py-4 border-b ${dark ? 'border-white/5' : 'border-ink-950/5'}`}>
+                            <f.icon size={14} style={{ color: iconColor }} />
+                            <span className={`text-sm md:text-base font-light ${dark ? 'text-white/70' : 'text-ink-950/70'}`}>
+                              {f.t}
+                            </span>
+                          </div>
+                        </FadeIn>
+                      );
+                    })}
                   </div>
-                  <div className="border border-[#10B981]/30 px-4 py-2">
-                    <span className="text-xs font-medium tracking-widest uppercase text-[#10B981]/70">Cephalo App engine</span>
+                  <Link to={p.href}
+                    className={`group inline-flex items-center gap-2 px-7 py-3.5 text-[11px] font-medium tracking-[0.22em] uppercase active:scale-[0.98] transition-all ${
+                      dark ? 'bg-white text-ink-950 hover:bg-white/90' : 'bg-ink-950 text-white hover:bg-ink-900'
+                    }`}
+                  >
+                    Discover {p.name}
+                    <span className={`w-7 h-7 rounded-full flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-[0.5px] transition-transform ${dark ? 'bg-ink-950/15' : 'bg-white/15'}`}>
+                      <ArrowRight size={11} />
+                    </span>
+                  </Link>
+                </FadeIn>
+
+                {/* Visual */}
+                <FadeIn delay={0.15} className="lg:col-span-5 [direction:ltr]">
+                  <div
+                    className={`relative aspect-square rounded-2xl border overflow-hidden ${dark ? 'bg-ink-950/70 border-white/10' : 'bg-[var(--paper)] border-ink-950/10'}`}
+                  >
+                    {/* Visual accent: purple for Polypus, neutral B&W for others */}
+                    {(() => {
+                      const ringColor = p.slug === 'polypus'
+                        ? p.accent
+                        : (dark ? '#F5F5F0' : '#0A0A0A');
+                      const gridColor = p.slug === 'polypus'
+                        ? `${p.accent}40`
+                        : (dark ? 'rgba(255,255,255,0.16)' : 'rgba(10,10,10,0.14)');
+                      const labelColor = p.slug === 'polypus'
+                        ? p.accent + 'AA'
+                        : (dark ? 'rgba(245,245,240,0.55)' : 'rgba(10,10,10,0.55)');
+                      return (
+                        <>
+                          {/* grid */}
+                          <div className="absolute inset-0 opacity-[0.08]"
+                            style={{
+                              backgroundImage: `linear-gradient(${gridColor} 1px, transparent 1px), linear-gradient(90deg, ${gridColor} 1px, transparent 1px)`,
+                              backgroundSize: '40px 40px',
+                            }} />
+                          {/* rings */}
+                          <motion.div animate={{ rotate: 360 }}
+                            transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
+                            className="absolute inset-10 rounded-full border"
+                            style={{ borderColor: ringColor + '25' }} />
+                          <motion.div animate={{ rotate: -360 }}
+                            transition={{ duration: 36, repeat: Infinity, ease: 'linear' }}
+                            className="absolute inset-20 rounded-full border"
+                            style={{ borderColor: ringColor + '20' }} />
+                          {/* centre */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="relative flex flex-col items-center gap-4">
+                              <div className="absolute inset-0 rounded-full blur-3xl opacity-40"
+                                style={{ background: `radial-gradient(circle, ${ringColor}, transparent)` }} />
+                              {p.logo ? (
+                                <img
+                                  src={p.logo} alt={p.name}
+                                  className={`relative w-32 h-32 object-contain ${p.slug !== 'polypus' ? (dark ? 'brightness-0 invert opacity-90' : 'brightness-0 opacity-80') : ''}`}
+                                  onError={e => { e.currentTarget.style.display = 'none' }}
+                                />
+                              ) : (
+                                <p className="relative font-sans font-semibold text-5xl tracking-tightest"
+                                  style={{ color: ringColor }}>
+                                  {p.name}
+                                </p>
+                              )}
+                              <p className="relative tag-eyebrow" style={{ color: labelColor }}>
+                                {p.slug.toUpperCase()}
+                              </p>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
-                </div>
-
-                <div className="mb-8">
-                  {[
-                    'Adaptive model routing — Haiku, Sonnet, Opus based on task complexity',
-                    'Hot/warm/cold memory — sessions that remember everything',
-                    'Agent spawner — autonomous parallel execution',
-                    'Skill registry — auto-install missing capabilities',
-                    'Pre-processor — every prompt optimised before execution',
-                  ].map((f, i) => (
-                    <FadeIn key={f} delay={i * 0.08}>
-                      <div className="flex items-start gap-3 py-3 border-b border-gray-100">
-                        <span className="w-1 h-1 rounded-full bg-black mt-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">{f}</span>
-                      </div>
-                    </FadeIn>
-                  ))}
-                </div>
-
-                <Link to="/projects/polypus" className="inline-flex items-center gap-2 text-sm font-medium tracking-wider uppercase border-b border-black pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors">
-                  Learn more <ArrowRight size={12} />
-                </Link>
-              </div>
-
-              <div className="aspect-video bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <img src="/logos/polypus-mark.png" alt="Polypus" className="w-20 h-20 object-contain mx-auto mb-4"
-                    onError={e => e.target.style.display='none'} />
-                  <p className="text-xs text-gray-300 tracking-wider uppercase">Preview coming soon</p>
-                </div>
+                </FadeIn>
               </div>
             </div>
-          </FadeIn>
-        </div>
-      </section>
+          </section>
+        )
+      })}
 
-      {/* Coming soon */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      {/* ── BOTTOM CTA ──────────────────────────────────────────────── */}
+      <section className="relative py-28 bg-ink-950 overflow-hidden">
+        <BackgroundPattern variant="dots" tone="dark" opacity={0.06} />
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <FadeIn>
-            <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-12">More products coming</p>
+            <h3 className="text-2xl md:text-3xl font-medium text-white mb-2 tracking-tight">Want something custom?</h3>
+            <p className="text-white/45 text-sm font-light">We build bespoke AI infrastructure too.</p>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-200">
-            {[
-              { name: 'AXIOM', desc: 'Multi-model AI orchestration. Any input, any model, any output.', status: 'In development' },
-              { name: 'SOVEREIGN', desc: 'Local-first AI desktop. Maximum privacy, maximum intelligence.', status: 'In development' },
-              { name: '???', desc: 'Something new. We are always building.', status: 'Research phase' },
-            ].map((p, i) => (
-              <FadeIn key={p.name} delay={i * 0.08}>
-                <div className={`p-8 ${i < 2 ? 'md:border-r border-gray-200' : ''} border-b md:border-b-0 border-gray-200`}>
-                  <h3 className="text-lg font-medium text-black mb-2">{p.name}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed mb-4">{p.desc}</p>
-                  <p className="text-xs text-gray-300 tracking-wider uppercase">{p.status}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <FadeIn delay={0.1}>
+            <Link to="/contact"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-ink-950 text-[11px] font-medium tracking-[0.22em] uppercase hover:bg-white/90 transition-colors">
+              Start a conversation <ArrowRight size={11} />
+            </Link>
+          </FadeIn>
         </div>
       </section>
     </PageWrapper>

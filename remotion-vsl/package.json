@@ -1,0 +1,38 @@
+{
+  "name": "cephalo-vsl",
+  "version": "1.0.0",
+  "description": "Cephalo Labs VSL — Remotion",
+  "private": true,
+  "scripts": {
+    "dev": "npx remotion studio",
+    "typecheck": "tsc --noEmit",
+    "render": "npx remotion render CephaloVSL ../../public/vsl.mp4 --codec=h264 --crf=18",
+    "render:showcase": "npx remotion render Showcase-v3 out/showcase-v3.mp4 --codec=h264 --crf=18",
+    "render:showcase:9x16": "ffmpeg -y -i out/showcase-v3.mp4 -vf scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920 -c:v libx264 -crf 18 -preset medium out/showcase-v3-9x16.mp4",
+    "render:showcase:poster": "ffmpeg -y -i out/showcase-v3.mp4 -vf \"select=eq(n\\,60)\" -frames:v 1 out/showcase-v3-poster.png",
+    "render:v4:cephalo": "npx remotion render CephaloLabs-v4 out/v4/cephalo-labs.mp4 --codec=h264 --crf=18",
+    "render:v4:polypus": "npx remotion render Polypus-v4 out/v4/polypus.mp4 --codec=h264 --crf=18",
+    "render:v4:kernel": "npx remotion render Kernel-v4 out/v4/kernel.mp4 --codec=h264 --crf=18",
+    "render:v4:pantheon": "npx remotion render PantheonGrowth-v4 out/v4/pantheon-growth.mp4 --codec=h264 --crf=18",
+    "render:v4:all": "npm run render:v4:cephalo && npm run render:v4:polypus && npm run render:v4:kernel && npm run render:v4:pantheon"
+  },
+  "dependencies": {
+    "@fontsource/geist-mono": "^5.2.7",
+    "@fontsource/geist-sans": "^5.2.5",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/lottie": "^4.0.451",
+    "@remotion/paths": "^4.0.451",
+    "@remotion/transitions": "^4.0.451",
+    "gsap": "^3.15.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.9.3"
+  }
+}

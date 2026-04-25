@@ -1,7 +1,18 @@
 node_modules/
+**/node_modules/
 dist/
 .DS_Store
 *.local
 .env
 .env.*
 .worktrees/
+
+# Remotion render outputs (large, regenerated locally)
+remotion-vsl/out/
+
+# Local reference images
+tmp-ref/
+
+# Backup mp4s
+*.bak-v1
+*.mp4.bak-*
