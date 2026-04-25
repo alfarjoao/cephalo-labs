@@ -10,6 +10,7 @@ import { useMeta } from '../components/ui/useMeta'
 import PageWrapper from '../components/ui/PageWrapper'
 import BackgroundPattern from '../components/ui/BackgroundPattern'
 import CountUp from '../components/ui/CountUp'
+import VideoHero from '../components/ui/VideoHero'
 import { useEnvironment } from '../components/ui/EnvironmentContext'
 
 // B&W palette — Kernel is strictly black and white (in development)
@@ -229,6 +230,15 @@ export default function ProductKernel() {
                 </div>
               ))}
             </div>
+          </FadeIn>
+
+          {/* Video hero */}
+          <FadeIn delay={0.45} className="w-full mt-16">
+            <VideoHero
+              src="/videos/kernel-v4.mp4"
+              accent="rgba(125,211,252,0.35)"
+              label="Watch Kernel · 35s"
+            />
           </FadeIn>
         </div>
       </section>

@@ -7,9 +7,12 @@ import "@fontsource/geist-mono/600.css";
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
+  Img,
   Series,
   interpolate,
   useCurrentFrame,
+  staticFile,
 } from "remotion";
 
 import {
@@ -19,6 +22,7 @@ import {
   KernelCompressionViz,
 } from "../../primitives/cinematic";
 import { TypewriterText } from "../../primitives/motion-graphics";
+import { LogoWatermark, LogoSigil } from "../../primitives/logo-lockup";
 
 // ═════════════════════════════════════════════════════════════════════════
 //  VSL-04 · KERNEL · 35.0s @ 30fps · 1920×1080 · 1050 frames
@@ -35,6 +39,7 @@ const BG = "#060608";
 const TEXT = "#F5F5F0";
 const MUTED = "#5A5A55";
 const RED = "#E63946";
+const CYAN = "#7DD3FC"; // electric data accent — used sparingly on KERNEL highlights
 
 // Total composition length (35s @ 30fps)
 export const KERNEL_DURATION = 1050;
@@ -184,16 +189,18 @@ const S3_Compression: React.FC = () => {
           <KernelCompressionViz nowFrame={frame} startAt={0} />
         </div>
 
-        {/* -85% counter, top-right of viz region (brief: top-right) */}
+        {/* -85% counter — cyan tint as it crosses 50% to signal data-flow */}
         <div
           style={{
             fontFamily: MONO,
             fontWeight: 500,
             fontSize: 40,
-            color: TEXT,
+            color: pct > 50 ? CYAN : TEXT,
             letterSpacing: 0,
             fontVariantNumeric: "tabular-nums",
             marginTop: 8,
+            textShadow: pct > 50 ? `0 0 18px ${CYAN}66` : "none",
+            transition: "color 200ms",
           }}
         >
           −{Math.round(pct)}%
@@ -366,16 +373,17 @@ const S5_Bill: React.FC = () => {
         MONTHLY · API SPEND
       </div>
 
-      {/* Odometer — Geist Mono 500 140pt, no fractional cents */}
+      {/* Odometer — Geist Mono 500 140pt, lands cyan on final value */}
       <div
         style={{
           fontFamily: MONO,
           fontWeight: 500,
           fontSize: 140,
-          color: TEXT,
+          color: frame > 120 ? CYAN : TEXT,
           letterSpacing: 0,
           lineHeight: 1,
           fontVariantNumeric: "tabular-nums",
+          textShadow: frame > 120 ? `0 0 30px ${CYAN}44` : "none",
         }}
       >
         ${Math.round(v).toLocaleString("en-US")}
@@ -410,21 +418,24 @@ const S6_Diagram: React.FC = () => {
     easing: easeOut,
   });
 
-  const Box: React.FC<{ label: string }> = ({ label }) => (
+  const Box: React.FC<{ label: string; highlight?: boolean }> = ({ label, highlight }) => (
     <div
       style={{
         width: 220,
         height: 80,
-        border: `1px solid rgba(245,245,240,0.30)`,
+        border: highlight
+          ? `1px solid ${CYAN}AA`
+          : `1px solid rgba(245,245,240,0.30)`,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontFamily: MONO,
         fontWeight: 500,
         fontSize: 20,
-        color: TEXT,
+        color: highlight ? CYAN : TEXT,
         letterSpacing: "0.02em",
-        background: "transparent",
+        background: highlight ? `${CYAN}10` : "transparent",
+        boxShadow: highlight ? `0 0 24px ${CYAN}33, inset 0 0 24px ${CYAN}10` : "none",
       }}
     >
       {label}
@@ -458,7 +469,7 @@ const S6_Diagram: React.FC = () => {
     >
       <Box label="[YOUR APP]" />
       <Arrow />
-      <Box label="[KERNEL]" />
+      <Box label="[KERNEL]" highlight />
       <Arrow />
       <Box label="[MODELS]" />
     </AbsoluteFill>
@@ -498,6 +509,18 @@ const S7_Wordmark: React.FC = () => {
         opacity: masterA,
       }}
     >
+      {/* Kernel mark above wordmark */}
+      <div style={{ opacity: wordA, marginBottom: 30 }}>
+        <Img
+          src={staticFile("logos/kernel-mark.svg")}
+          style={{
+            width: 96,
+            height: 96,
+            objectFit: "contain",
+            filter: `drop-shadow(0 0 24px ${CYAN}88) brightness(1.4)`,
+          }}
+        />
+      </div>
       {/* KERNEL wordmark — Geist Mono 600 140pt, tracking 0.02em (brief §8) */}
       <div
         style={{
@@ -508,7 +531,7 @@ const S7_Wordmark: React.FC = () => {
           letterSpacing: "0.02em",
           lineHeight: 1,
           opacity: wordA,
-          // Brief Appendix A: NO scale or slide on wordmark — fade only.
+          textShadow: `0 0 40px ${CYAN}33`,
         }}
       >
         KERNEL
@@ -544,6 +567,8 @@ const S7_Wordmark: React.FC = () => {
 export const Kernel: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: BG, color: TEXT, fontFamily: MONO }}>
+      {/* Background ambient — kernel gets its own track when generated; falls back to cephalo bed */}
+      <Audio src={staticFile("music/cephalo-main.mp3")} volume={0.28} />
       <Series>
         <Series.Sequence durationInFrames={F.cursorEnd}>
           <S1_Cursor />
@@ -569,6 +594,9 @@ export const Kernel: React.FC = () => {
           <S7_Wordmark />
         </Series.Sequence>
       </Series>
+      {/* Persistent watermarks — Kernel mark top-right + Cephalo sigil bottom-left */}
+      <LogoWatermark brand="kernel" position="top-right" size={28} opacity={0.45} withLabel="KERNEL" />
+      <LogoSigil brand="cephalo" position="bottom-left" size={20} opacity={0.35} />
 
       {/* TODO(audio · brief §6-7):
           - 50Hz sub-bass drone, in 0..30 fade, hold to frame 990, fade 990..1050

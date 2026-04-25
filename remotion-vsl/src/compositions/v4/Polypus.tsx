@@ -24,6 +24,7 @@ import {
   CircularProgress,
   Odometer,
 } from "../../primitives/motion-graphics";
+import { LogoWatermark, LogoLockup, LogoSigil } from "../../primitives/logo-lockup";
 
 // ═══════════════════════════════════════════════════════════════════════
 //  VSL-01 · POLYPUS · v4 · 55s @ 30fps · 1650 frames · 1920×1080
@@ -856,10 +857,12 @@ const S5_Cost: React.FC = () => {
   const eyebrowShow = appear(frame, 6, 18).opacity;
   const cardShow = appear(frame, 0, 22).opacity;
 
-  // 30 daily savings bars
-  const dailyBars = Array.from({ length: 30 }, (_, i) => ({
+  // 30 daily savings bars — raw values then normalize to <=95% of container
+  const rawBars = Array.from({ length: 30 }, (_, i) => 80 + Math.round(Math.sin(i * 0.7) * 40 + (i % 5) * 18));
+  const maxBar = Math.max(...rawBars);
+  const dailyBars = rawBars.map((value, i) => ({
     label: `${i + 1}`,
-    value: 80 + Math.round(Math.sin(i * 0.7) * 40 + (i % 5) * 18),
+    value: Math.round((value / maxBar) * 95),
   }));
 
   const savedShow = appear(frame, 60, 22).opacity;
@@ -1386,6 +1389,16 @@ const S8_Wordmark: React.FC = () => {
           pointerEvents: "none",
         }}
       />
+      {/* Polypus logo above wordmark */}
+      <div
+        style={{
+          opacity: wordIn,
+          transform: `translateY(${(1 - wordIn) * 24}px) scale(${0.92 + 0.08 * wordIn})`,
+          marginBottom: -8,
+        }}
+      >
+        <LogoLockup brand="polypus" size={140} show={wordIn} tint={`${ACCENT}88`} />
+      </div>
       <div
         style={{
           fontFamily: FONT_DISPLAY,
@@ -1454,6 +1467,9 @@ export const Polypus: React.FC = () => {
       </Series>
       <Vignette strength={0.5} />
       <Grain opacity={0.03} />
+      {/* Persistent brand watermarks — Polypus product mark + CEPHALO Labs sigil */}
+      <LogoWatermark brand="polypus" position="top-right" size={32} opacity={0.5} withLabel="POLYPUS" />
+      <LogoSigil brand="cephalo" position="bottom-left" size={20} opacity={0.35} />
     </AbsoluteFill>
   );
 };

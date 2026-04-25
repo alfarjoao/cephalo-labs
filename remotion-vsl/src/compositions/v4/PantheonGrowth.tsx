@@ -7,9 +7,12 @@ import "@fontsource/jetbrains-mono/500.css";
 import React from "react";
 import {
   AbsoluteFill,
+  Audio,
+  Img,
   interpolate,
   useCurrentFrame,
   useVideoConfig,
+  staticFile,
 } from "remotion";
 import {
   TransitionSeries,
@@ -26,6 +29,7 @@ import {
   PantheonDashboard,
 } from "../../primitives/cinematic";
 import { LineGraph, Odometer } from "../../primitives/motion-graphics";
+import { LogoWatermark, LogoSigil } from "../../primitives/logo-lockup";
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  VSL-03 · PANTHEON GROWTH · 50s @ 30fps · 1500 frames · 1920×1080
@@ -872,6 +876,18 @@ const Scene8_Wordmark: React.FC = () => {
           pointerEvents: "none",
         }}
       />
+      {/* Pantheon logo above wordmark */}
+      <div style={{ opacity: wordA, marginBottom: 18 }}>
+        <Img
+          src={staticFile("logos/pantheon-growth.png")}
+          style={{
+            width: 80,
+            height: 80,
+            objectFit: "contain",
+            filter: `drop-shadow(0 0 24px ${GOLD_BRIGHT}66)`,
+          }}
+        />
+      </div>
       <div
         style={{
           fontFamily: P_FONT,
@@ -882,14 +898,27 @@ const Scene8_Wordmark: React.FC = () => {
           lineHeight: 1,
           opacity: wordA,
           transform: `translateY(${(1 - wordA) * 10}px)`,
-          textShadow: `0 0 40px ${GOLD_SOFT}26`,
+          textShadow: `0 0 40px ${GOLD_SOFT}26, 0 0 80px ${GOLD}33`,
         }}
       >
         PANTHEON
       </div>
       <div
         style={{
-          marginTop: 110,
+          marginTop: 60,
+          fontFamily: P_MONO,
+          fontSize: 12,
+          color: GOLD_SOFT,
+          letterSpacing: "0.32em",
+          textTransform: "uppercase",
+          opacity: ctaA,
+        }}
+      >
+        STUDIO · PORTUGAL · OPERATED BY CEPHALO LABS
+      </div>
+      <div
+        style={{
+          marginTop: 30,
           fontFamily: P_MONO,
           fontSize: 14,
           color: MUTED,
@@ -915,6 +944,8 @@ const HARD_CUT = 1;
 
 export const PantheonGrowth: React.FC = () => (
   <AbsoluteFill style={{ background: BG, fontFamily: P_FONT }}>
+    {/* Ambient music bed — Pantheon's own track */}
+    <Audio src={staticFile("music/pantheon.mp3")} volume={0.32} />
     <TransitionSeries>
       <TransitionSeries.Sequence durationInFrames={S1}>
         <Scene1_Dot />
@@ -987,6 +1018,9 @@ export const PantheonGrowth: React.FC = () => (
     {/* Editorial finishing — subtle vignette + minimal grain */}
     <Vignette strength={0.5} />
     <Grain opacity={0.03} />
+    {/* Persistent Pantheon mark + Cephalo Labs sigil */}
+    <LogoWatermark brand="pantheon" position="top-right" size={32} opacity={0.5} withLabel="PANTHEON" />
+    <LogoSigil brand="cephalo" position="bottom-left" size={20} opacity={0.35} />
   </AbsoluteFill>
 );
 

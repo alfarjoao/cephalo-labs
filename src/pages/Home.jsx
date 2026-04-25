@@ -8,7 +8,6 @@ import BackgroundPattern from '../components/ui/BackgroundPattern'
 import VideoHero from '../components/ui/VideoHero'
 import Marquee from '../components/ui/Marquee'
 import CountUp from '../components/ui/CountUp'
-import HeroBg from '../three/HeroBg'
 import KernelMark from '../components/logos/KernelMark'
 
 const PURPLE = '#C084FC'
@@ -64,7 +63,6 @@ export default function Home() {
 
       {/* ── HERO · dark cinematic ────────────────────────────────────── */}
       <section className="relative min-h-screen bg-ink-950 flex items-center overflow-hidden -mt-16 pt-24">
-        <HeroBg />
         <BackgroundPattern variant="neural" tone="dark" opacity={0.16} />
         <div className="absolute inset-0 bg-grid-faint pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[600px] rounded-full pointer-events-none opacity-60"
