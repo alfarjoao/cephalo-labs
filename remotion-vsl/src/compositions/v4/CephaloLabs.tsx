@@ -9,6 +9,7 @@ import {
   Img,
   spring,
   useVideoConfig,
+  Sequence,
 } from "remotion";
 import {
   TransitionSeries,
@@ -757,7 +758,22 @@ const HARD_CUT = 1;
 export const CephaloLabs: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: BG, color: TEXT, fontFamily: FONT }}>
-      <Audio src={staticFile("music/cephalo-main.mp3")} volume={0.32} />
+      <Audio src={staticFile("music/cephalo-main.mp3")} volume={0.28} />
+      {/* SFX layer — 12 hits synced via Sequence to motion events */}
+      <Sequence from={0}><Audio src={staticFile("sfx/cephalo/01-sub-drone.mp3")} volume={0.55} /></Sequence>
+      <Sequence from={95}><Audio src={staticFile("sfx/cephalo/02-text-whoosh.mp3")} volume={0.55} /></Sequence>
+      <Sequence from={195}><Audio src={staticFile("sfx/cephalo/03-underline-click.mp3")} volume={0.5} /></Sequence>
+      <Sequence from={220}><Audio src={staticFile("sfx/cephalo/04-typewriter-rapid.mp3")} volume={0.45} /></Sequence>
+      <Sequence from={410}><Audio src={staticFile("sfx/cephalo/05-router-impact.mp3")} volume={0.6} /></Sequence>
+      <Sequence from={470}><Audio src={staticFile("sfx/cephalo/06-ui-click.mp3")} volume={0.4} /></Sequence>
+      <Sequence from={510}><Audio src={staticFile("sfx/cephalo/06-ui-click.mp3")} volume={0.4} /></Sequence>
+      <Sequence from={550}><Audio src={staticFile("sfx/cephalo/06-ui-click.mp3")} volume={0.4} /></Sequence>
+      <Sequence from={600}><Audio src={staticFile("sfx/cephalo/07-paper-fold.mp3")} volume={0.45} /></Sequence>
+      <Sequence from={715}><Audio src={staticFile("sfx/cephalo/08-deep-impact.mp3")} volume={0.7} /></Sequence>
+      <Sequence from={810}><Audio src={staticFile("sfx/cephalo/09-typewriter-burst.mp3")} volume={0.45} /></Sequence>
+      <Sequence from={880}><Audio src={staticFile("sfx/cephalo/10-sub-thud.mp3")} volume={0.65} /></Sequence>
+      <Sequence from={990}><Audio src={staticFile("sfx/cephalo/11-orchestral-swell.mp3")} volume={0.55} /></Sequence>
+      <Sequence from={1140}><Audio src={staticFile("sfx/cephalo/12-final-impact.mp3")} volume={0.6} /></Sequence>
       <TransitionSeries>
         <TransitionSeries.Sequence durationInFrames={S1_LEN}>
           <S1_ColdOpen durationInFrames={S1_LEN} />
