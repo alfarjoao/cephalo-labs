@@ -213,18 +213,18 @@ export default function ProductKernel() {
             </a>
           </FadeIn>
 
-          {/* Quick numbers under hero */}
+          {/* Quick numbers under hero — animated via CountUp */}
           <FadeIn delay={0.35} className="w-full max-w-4xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 rounded-2xl overflow-hidden">
               {[
-                { v: '70%',  l: 'Less tokens' },
-                { v: '73%',  l: 'Cost savings' },
-                { v: '4×',   l: 'Faster' },
-                { v: '€3.5K',l: 'Saved / month' },
-              ].map((k, i) => (
+                { to: 70,  prefix: '',  suffix: '%', l: 'Less tokens' },
+                { to: 73,  prefix: '',  suffix: '%', l: 'Cost savings' },
+                { to: 4,   prefix: '',  suffix: '×', l: 'Faster' },
+                { to: 3.5, prefix: '€', suffix: 'K', decimals: 1, l: 'Saved / month' },
+              ].map((k) => (
                 <div key={k.l} className="bg-ink-950 p-6 text-center">
                   <p className="font-sans font-semibold text-3xl md:text-4xl tracking-tightest mb-2" style={{ color: GOLD }}>
-                    {k.v}
+                    <CountUp to={k.to} prefix={k.prefix} suffix={k.suffix} decimals={k.decimals || 0} />
                   </p>
                   <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-white/35">{k.l}</p>
                 </div>
@@ -257,13 +257,13 @@ export default function ProductKernel() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden">
             {[
-              { big: '60%',   small: 'of tokens you pay for are redundant context' },
-              { big: '3×',    small: 'what you actually need — every month' },
-              { big: '100%',  small: 'of large tasks waste compute on the wrong model' },
+              { to: 60,  suffix: '%', small: 'of tokens you pay for are redundant context' },
+              { to: 3,   suffix: '×', small: 'what you actually need — every month' },
+              { to: 100, suffix: '%', small: 'of large tasks waste compute on the wrong model' },
             ].map((c, i) => (
               <FadeIn key={c.small} delay={i * 0.08} className="bg-ink-950 p-10">
                 <p className="font-sans font-semibold text-6xl md:text-7xl tracking-tightest mb-5" style={{ color: GOLD }}>
-                  {c.big}
+                  <CountUp to={c.to} suffix={c.suffix} />
                 </p>
                 <p className="text-sm md:text-base text-white/55 font-light leading-relaxed">{c.small}</p>
               </FadeIn>

@@ -325,14 +325,14 @@ export default function Home() {
             <FadeIn delay={0.12}>
               <div className="grid grid-cols-2 gap-px bg-ink-950/10 rounded-2xl overflow-hidden">
                 {[
-                  { v: '$400K+', l: 'Revenue generated' },
-                  { v: '14×',    l: 'Long-run ROAS' },
-                  { v: '340%',   l: 'Lead growth · 90 days' },
-                  { v: '80%',    l: 'Manual ops reduced' },
+                  { prefix: '$', to: 400, suffix: 'K+', l: 'Revenue generated' },
+                  { prefix: '',  to: 14,  suffix: '×',  l: 'Long-run ROAS' },
+                  { prefix: '',  to: 340, suffix: '%',  l: 'Lead growth · 90 days' },
+                  { prefix: '',  to: 80,  suffix: '%',  l: 'Manual ops reduced' },
                 ].map(s => (
                   <div key={s.l} className="bg-[var(--paper)] p-8 text-center">
                     <p className="font-sans font-semibold text-3xl md:text-4xl text-ink-950 mb-2 tracking-tightest">
-                      {s.v}
+                      {s.prefix}<CountUp to={s.to} />{s.suffix}
                     </p>
                     <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-ink-950/50">{s.l}</p>
                   </div>
