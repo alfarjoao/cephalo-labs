@@ -7,6 +7,8 @@ import {
   staticFile,
   Easing,
   Img,
+  spring,
+  useVideoConfig,
 } from "remotion";
 import {
   TransitionSeries,
@@ -20,7 +22,7 @@ import {
   Vignette,
   Grain,
 } from "../../primitives/cinematic";
-import { TextScramble } from "../../primitives/motion-graphics";
+import { BinaryRain } from "../../primitives/motion-graphics";
 import { LogoSigil } from "../../primitives/logo-lockup";
 import {
   HairlineGrid,
@@ -35,12 +37,23 @@ import {
   FastTicker,
   Halo,
 } from "../../primitives/motion-bw";
+import { GlassPanel, GlassBadge } from "../../primitives/glassmorphism";
+import { CephaloThreeScene } from "../../three/CephaloThreeScene";
 
 // ═════════════════════════════════════════════════════════════════════════
-//  VSL-02 · CEPHALO LABS · v4.2 · 40s @ 30fps · 1200 frames · 1920x1080
-//  STRICT BLACK & WHITE. Editorial · cinematic · dense.
-//  Every scene runs 3-5 simultaneous motion layers.
-//  No coloured accents. Light is structure; absence is silence.
+//  VSL-02 · CEPHALO LABS · v4.4 · Linear × Apple hybrid · STRICT B&W
+//  40s @ 30fps · 1200 frames · 1920×1080
+//
+//  Linear DNA: spring physics (overshoot/bounce), rapid kinetic typography,
+//  hairline grids, high-contrast B&W reveals.
+//
+//  Apple DNA: cinematic restraint, dramatic 3x→1x scale entries,
+//  slow majestic pacing on hero shots, pristine compositing.
+//
+//  3D layer (@remotion/three): rotating dashed wireframe rings + particles
+//  in S4 and S7 for real depth.
+//
+//  Glassmorphism HUD panels in S5 and S6 (cut-corner clip-path).
 // ═════════════════════════════════════════════════════════════════════════
 
 const BG = "#0A0A0A";
@@ -48,7 +61,7 @@ const TEXT = "#F5F5F0";
 const MUTED = "#8A8A82";
 const FAINT = "rgba(245,245,240,0.18)";
 
-// ── Scene durations (frames @ 30fps) ───────────────────────────────────
+// Scene durations
 const S1_LEN = 90;
 const S2_LEN = 120;
 const S3_LEN = 90;
@@ -60,20 +73,24 @@ const S7_LEN = 240;
 export const CEPHALO_LABS_DURATION =
   S1_LEN + S2_LEN + S3_LEN + S4_LEN + S5_LEN + S6_LEN + S7_LEN;
 
-const easeBezier = Easing.bezier(0.16, 1, 0.3, 1);
+const easeOut = Easing.bezier(0.16, 1, 0.3, 1);
 
 type SceneProps = { durationInFrames: number };
 
-// ─── S1 · Cold open (0-3s) ────────────────────────────────────────────
-//   Layers: deep black + breathing halo + single hairline that draws + grain
+// Spring config presets
+const SPRING_HERO = { damping: 12, stiffness: 100, mass: 0.5 };
+const SPRING_TIGHT = { damping: 30, stiffness: 280, mass: 0.6 };
+const SPRING_NATURAL = { damping: 200, stiffness: 100, mass: 0.5 };
+
+// ─── S1 · Cold open (0–3s, 90f) ───────────────────────────────────────
+//   Layers: deep black + breathing halo + spring-driven hairline +
+//   particle stream + CRT flicker. SFX: sub-drone open.
 const S1_ColdOpen: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
-  const lineW = interpolate(frame, [40, 75], [0, 380], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
-  const lineOut = interpolate(frame, [82, 90], [1, 0], {
+  const { fps } = useVideoConfig();
+  const lineSpring = spring({ frame: Math.max(0, frame - 35), fps, config: SPRING_HERO });
+  const lineW = lineSpring * 460;
+  const lineFade = interpolate(frame, [82, 90], [1, 0.3], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -87,7 +104,8 @@ const S1_ColdOpen: React.FC<SceneProps> = () => {
             height: 1,
             width: lineW,
             background: TEXT,
-            opacity: 0.85 * lineOut,
+            opacity: 0.85 * lineFade,
+            boxShadow: `0 0 8px ${TEXT}33`,
           }}
         />
       </AbsoluteFill>
@@ -96,37 +114,65 @@ const S1_ColdOpen: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S2 · Anchor "We build intelligence." (3-7s) ──────────────────────
-//   Layers: hairline grid drawing + char-stagger text + underline + drift +
-//   secondary scrambled meta-line + grain
+// ─── S2 · Anchor "We build intelligence." (3–7s, 120f) ────────────────
+//   Layers: hairline grid + 3x→1x scale-in text + spring underline +
+//   particle burst + glyph scramble sub-line + camera drift.
+//   SFX: text whoosh + underline click.
 const S2_Anchor: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
-  const underlineW = interpolate(frame, [50, 100], [0, 720], {
+  const { fps } = useVideoConfig();
+  // Cinematic Tech Intro 3x→1x scale entry on text (frames 0-40)
+  const scaleSpring = spring({
+    frame: Math.max(0, frame - 5),
+    fps,
+    config: SPRING_HERO,
+    durationInFrames: 40,
+  });
+  const scale = 3 - 2 * scaleSpring; // 3 → 1
+  const opacity = interpolate(frame, [5, 25], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
+  // Underline spring
+  const underlineSpring = spring({
+    frame: Math.max(0, frame - 50),
+    fps,
+    config: SPRING_NATURAL,
+  });
+  const underlineW = underlineSpring * 720;
+  // Sub-line (glyph scramble)
   const metaShow = interpolate(frame, [70, 100], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
   return (
     <AbsoluteFill style={{ background: BG }}>
       <HairlineGrid count={28} orientation="horizontal" startFrame={0} drawDuration={45} holdDuration={50} exitDuration={25} opacity={0.12} />
-      <CameraDrift amplitude={10} scale={0.008} period={300}>
+      <CameraDrift amplitude={8} scale={0.006} period={300}>
         <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <KineticLetters
-            text="We build intelligence."
-            startFrame={5}
-            staggerFrames={2.4}
-            letterDuration={20}
-            fontSize={128}
-            fontWeight={500}
-            color={TEXT}
-            origin="below"
-            driftPx={22}
-          />
+          <div
+            style={{
+              opacity,
+              transform: `scale(${scale})`,
+              transformOrigin: "center",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: FONT,
+                fontSize: 124,
+                fontWeight: 500,
+                letterSpacing: "-0.03em",
+                color: TEXT,
+                lineHeight: 1,
+                whiteSpace: "nowrap",
+              }}
+            >
+              We build intelligence.
+            </span>
+          </div>
           <div
             style={{
               marginTop: 38,
@@ -134,6 +180,7 @@ const S2_Anchor: React.FC<SceneProps> = () => {
               width: underlineW,
               background: TEXT,
               opacity: 0.7,
+              boxShadow: `0 0 8px ${TEXT}44`,
             }}
           />
           <div style={{ marginTop: 34, opacity: metaShow }}>
@@ -155,48 +202,49 @@ const S2_Anchor: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S3 · Studio Lisbon coordinate beat (7-10s) ───────────────────────
-//   Layers: dot field rippling + corner brackets + scrambled coordinates +
-//   timestamp ticker bottom + camera drift
+// ─── S3 · Studio Lisbon coordinate beat (7–10s, 90f) ──────────────────
+//   Layers: dot field + corner brackets (spring-in) + glyph-scrambled
+//   coordinates + live timestamp ticker. SFX: typewriter ticks.
 const S3_Eyebrow: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
-  const cornerShow = interpolate(frame, [0, 25], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
+  const { fps } = useVideoConfig();
+  const cornerSpring = spring({ frame: Math.max(0, frame - 5), fps, config: SPRING_TIGHT });
   const lineW = interpolate(frame, [10, 45], [0, 480], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
-  // Live timestamp (fake)
   const sec = Math.floor(frame / 30);
   const ms = Math.floor((frame % 30) * (1000 / 30));
   return (
     <AbsoluteFill style={{ background: BG }}>
       <DotField cols={70} rows={36} rippleSpeed={0.05} baseOpacity={0.05} />
-      {/* Four corner brackets */}
+      {/* Spring-animated corner brackets */}
       {[
-        { top: 60, left: 80, rot: 0 },
-        { top: 60, right: 80, rot: 90 },
-        { bottom: 60, right: 80, rot: 180 },
-        { bottom: 60, left: 80, rot: 270 },
-      ].map((p, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            ...p,
-            width: 32,
-            height: 32,
-            borderTop: `1px solid ${TEXT}`,
-            borderLeft: `1px solid ${TEXT}`,
-            transform: `rotate(${p.rot}deg)`,
-            opacity: cornerShow * 0.6,
-          }}
-        />
-      ))}
+        { top: 60, left: 80, rot: 0, ox: -40, oy: -40 },
+        { top: 60, right: 80, rot: 90, ox: 40, oy: -40 },
+        { bottom: 60, right: 80, rot: 180, ox: 40, oy: 40 },
+        { bottom: 60, left: 80, rot: 270, ox: -40, oy: 40 },
+      ].map((p, i) => {
+        const s = spring({ frame: Math.max(0, frame - 8 - i * 4), fps, config: SPRING_TIGHT });
+        const tx = (1 - s) * p.ox;
+        const ty = (1 - s) * p.oy;
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              ...{ top: p.top, left: p.left, right: p.right, bottom: p.bottom } as any,
+              width: 32,
+              height: 32,
+              borderTop: `1px solid ${TEXT}`,
+              borderLeft: `1px solid ${TEXT}`,
+              transform: `rotate(${p.rot}deg) translate(${tx}px, ${ty}px)`,
+              opacity: s * 0.65,
+            }}
+          />
+        );
+      })}
       <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 28 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
           <div style={{ height: 1, width: lineW / 2, background: `${TEXT}88` }} />
@@ -217,7 +265,7 @@ const S3_Eyebrow: React.FC<SceneProps> = () => {
             fontSize: 11,
             color: MUTED,
             letterSpacing: "0.32em",
-            opacity: cornerShow * 0.55,
+            opacity: cornerSpring * 0.55,
           }}
         >
           38°43′ N · 9°08′ W · {String(sec).padStart(2, "0")}:{String(ms).padStart(3, "0")}
@@ -228,17 +276,14 @@ const S3_Eyebrow: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S4 · Polypus showcase (10-18s) ───────────────────────────────────
-//   Layers: orbiting nodes around halo + eyebrow typewriter-scramble +
-//   mini code stream + bottom kicker + camera drift + halo + grain
+// ─── S4 · Polypus showcase (10–18s, 240f) ─────────────────────────────
+//   Layers: 3D rotating rings + halo + spring-entry logo + 3x→1x kinetic
+//   POLYPUS + orbiting nodes + code stream + router log. SFX: sub-impact.
 const S4_Polypus: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
-  const enter = interpolate(frame, [0, 30], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
-  // Code stream lines
+  const { fps } = useVideoConfig();
+  const enterSpring = spring({ frame: Math.max(0, frame - 5), fps, config: SPRING_NATURAL });
+  const logoSpring = spring({ frame: Math.max(0, frame - 30), fps, config: SPRING_HERO });
   const codeLines = [
     "  router.dispatch(task)",
     "  → analyse(intent)",
@@ -248,11 +293,11 @@ const S4_Polypus: React.FC<SceneProps> = () => {
     "  ✓ 0.42s · 1928 tk",
   ];
   return (
-    <AbsoluteFill style={{ background: BG, opacity: enter }}>
-      <CameraDrift amplitude={10} scale={0.01} period={420}>
-        <Halo size={900} opacity={0.07} period={180} />
-        <OrbitingNodes cx={960} cy={540} count={7} radius={300} speed={0.006} nodeSize={7} opacity={0.55} />
-      </CameraDrift>
+    <AbsoluteFill style={{ background: BG, opacity: enterSpring }}>
+      {/* 3D depth layer */}
+      <CephaloThreeScene rings={3} particleCount={36} />
+      <Halo size={900} opacity={0.06} period={180} />
+      <OrbitingNodes cx={960} cy={540} count={7} radius={300} speed={0.006} nodeSize={6} opacity={0.45} />
       {/* Top-left eyebrow */}
       <div style={{ position: "absolute", top: 70, left: 90 }}>
         <GlyphScramble
@@ -265,21 +310,19 @@ const S4_Polypus: React.FC<SceneProps> = () => {
           color={TEXT}
         />
       </div>
-      {/* Center: logo + word kinetic */}
+      {/* Center: spring logo + kinetic POLYPUS */}
       <AbsoluteFill style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22 }}>
-          {/* Polypus mark — desaturated */}
           <div
             style={{
-              opacity: interpolate(frame, [40, 75], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }),
-              transform: `scale(${0.85 + 0.15 * interpolate(frame, [40, 75], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
-              marginBottom: 4,
+              opacity: logoSpring,
+              transform: `scale(${0.6 + 0.4 * logoSpring}) translateY(${(1 - logoSpring) * 30}px)`,
               filter: "grayscale(1) brightness(1.15)",
             }}
           >
             <Img
               src={staticFile("logos/polypus-mark.svg")}
-              style={{ width: 72, height: 72, objectFit: "contain", opacity: 0.95 }}
+              style={{ width: 80, height: 80, objectFit: "contain" }}
             />
           </div>
           <KineticLetters
@@ -331,19 +374,8 @@ const S4_Polypus: React.FC<SceneProps> = () => {
           );
         })}
       </div>
-      {/* Bottom-left router log ticker */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 80,
-          left: 90,
-          fontFamily: MONO,
-          fontSize: 11,
-          color: MUTED,
-          letterSpacing: "0.16em",
-          opacity: 0.5,
-        }}
-      >
+      {/* Bottom-left router log */}
+      <div style={{ position: "absolute", bottom: 80, left: 90 }}>
         <GlyphScramble
           text="ROUTER · DISPATCHED · 12 TASKS"
           startFrame={140}
@@ -359,32 +391,43 @@ const S4_Polypus: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S5 · Pantheon revenue €400K+ (18-25s) ────────────────────────────
-//   Layers: hairline grid + hero ticker counting + breaking line graph +
-//   bracket frame + camera drift + meta data lines
+// ─── S5 · Pantheon revenue €400K (18–25s, 210f) ───────────────────────
+//   Layers: vertical hairline grid + glassmorphism HUD slide-in +
+//   FastTicker + line graph spring-draw + meta lines. SFX: deep impact + paper-fold.
 const S5_Pantheon: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const enter = interpolate(frame, [0, 22], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
-  // Line graph polyline points (20 nodes ascending)
+  // Line graph polyline points
   const points = Array.from({ length: 20 }, (_, i) => {
     const x = 240 + (i / 19) * 1440;
     const variance = Math.sin(i * 0.7) * 24;
     const baseY = 700 - (i / 19) * 280;
     return { x, y: baseY + variance };
   });
-  const drawT = interpolate(frame, [20, 130], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
-  const segCount = Math.max(1, Math.floor(drawT * (points.length - 1)));
+  const drawSpring = spring({ frame: Math.max(0, frame - 30), fps, config: { damping: 200, stiffness: 60, mass: 0.6 } });
+  const segCount = Math.max(1, Math.floor(drawSpring * (points.length - 1)));
   return (
     <AbsoluteFill style={{ background: BG, opacity: enter }}>
       <HairlineGrid count={18} orientation="vertical" startFrame={0} drawDuration={60} holdDuration={120} exitDuration={30} opacity={0.06} />
+      {/* HUD panel slides in from left at frame 50 */}
+      <div style={{ position: "absolute", top: 200, left: 80 }}>
+        <GlassPanel startFrame={50} width={460} height={210} slideFrom="left" cornerSize={16}>
+          <div style={{ fontFamily: MONO, fontSize: 11, color: MUTED, letterSpacing: "0.24em", textTransform: "uppercase" }}>
+            BENCHMARK · OPERATIONS
+          </div>
+          <div style={{ marginTop: 16, fontFamily: FONT, fontSize: 36, color: TEXT, fontWeight: 500, letterSpacing: "-0.02em" }}>
+            18 months · 4 verticals
+          </div>
+          <div style={{ marginTop: 10, fontFamily: MONO, fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
+            14× ROAS · 340% leads · 80% ops automated
+          </div>
+        </GlassPanel>
+      </div>
       <CameraDrift amplitude={6} scale={0.006} period={360}>
         <AbsoluteFill>
           {/* Eyebrow top-left */}
@@ -399,17 +442,8 @@ const S5_Pantheon: React.FC<SceneProps> = () => {
               color={TEXT}
             />
           </div>
-          {/* Top-right meta */}
-          <div style={{ position: "absolute", top: 70, right: 90, textAlign: "right" }}>
-            <div style={{ fontFamily: MONO, fontSize: 11, color: MUTED, letterSpacing: "0.22em", opacity: 0.55 }}>
-              REVENUE · BUILT
-            </div>
-            <div style={{ fontFamily: MONO, fontSize: 11, color: MUTED, letterSpacing: "0.22em", opacity: 0.5, marginTop: 4 }}>
-              NOT PROJECTED
-            </div>
-          </div>
-          {/* Hero ticker — center */}
-          <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 36 }}>
+          {/* Hero ticker — center-right (offset for HUD) */}
+          <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 36, paddingLeft: 200 }}>
             <FastTicker
               from={0}
               to={400}
@@ -433,7 +467,7 @@ const S5_Pantheon: React.FC<SceneProps> = () => {
               FOUR HUNDRED THOUSAND EUROS · SHIPPED
             </div>
           </AbsoluteFill>
-          {/* Bottom — line graph */}
+          {/* Bottom — line graph (spring drawn) */}
           <svg
             width={1920}
             height={1080}
@@ -458,46 +492,47 @@ const S5_Pantheon: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S6 · Kernel compression 12,842 → 1,928 (25-32s) ──────────────────
-//   Layers: dual numbers (large dissolving, small materializing) + bar
-//   compression + −85% counter + hairline frame + meta + flicker
+// ─── S6 · Kernel compression 12,842→1,928 (25–32s, 210f) ──────────────
+//   Layers: BinaryRain matrix data streams (left+right) + hairline grid +
+//   dual-stage number transition + spring shrinking bar + GlassBadge "−85%".
+//   SFX: typewriter burst + sub-thud.
 const S6_Kernel: React.FC<SceneProps> = () => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const enter = interpolate(frame, [0, 22], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
   const tBig = interpolate(frame, [10, 80], [12842, 1928], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
   const bigOpacity = interpolate(frame, [60, 100], [1, 0.15], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
   const smallShow = interpolate(frame, [70, 110], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: easeBezier,
+    easing: easeOut,
   });
-  const pctShow = interpolate(frame, [110, 145], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
-  const barScale = interpolate(frame, [10, 100], [1, 1928 / 12842], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: easeBezier,
-  });
+  const barShrinkSpring = spring({ frame: Math.max(0, frame - 10), fps, config: { damping: 200, stiffness: 80, mass: 0.6 } });
+  const barScale = 1 - barShrinkSpring * (1 - 1928 / 12842);
   const formatted = Math.round(tBig).toLocaleString("en-US");
   return (
     <AbsoluteFill style={{ background: BG, opacity: enter }}>
-      <HairlineGrid count={20} orientation="mixed" startFrame={0} drawDuration={50} holdDuration={130} exitDuration={30} opacity={0.07} />
-      <CameraDrift amplitude={8} scale={0.008} period={300}>
+      {/* Matrix-style data streams falling on left + right */}
+      <div style={{ position: "absolute", left: 0, top: 0, width: 360, height: 1080, opacity: 0.35 }}>
+        <BinaryRain density={28} speed={6} opacity={0.85} />
+      </div>
+      <div style={{ position: "absolute", right: 0, top: 0, width: 360, height: 1080, opacity: 0.35 }}>
+        <BinaryRain density={28} speed={6} opacity={0.85} />
+      </div>
+      <HairlineGrid count={16} orientation="mixed" startFrame={0} drawDuration={50} holdDuration={130} exitDuration={30} opacity={0.06} />
+      <CameraDrift amplitude={6} scale={0.006} period={300}>
         {/* Eyebrow */}
         <div style={{ position: "absolute", top: 70, left: 90 }}>
           <GlyphScramble
@@ -511,11 +546,11 @@ const S6_Kernel: React.FC<SceneProps> = () => {
           />
         </div>
         {/* Center stack */}
-        <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24 }}>
-          {/* Kernel mark above the numbers — desaturated */}
+        <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 22 }}>
+          {/* Kernel mark above */}
           <div
             style={{
-              opacity: interpolate(frame, [4, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }),
+              opacity: interpolate(frame, [4, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeOut }),
               transform: `translateY(${(1 - interpolate(frame, [4, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })) * 8}px)`,
               marginBottom: 4,
               filter: "grayscale(1) brightness(1.15)",
@@ -523,10 +558,10 @@ const S6_Kernel: React.FC<SceneProps> = () => {
           >
             <Img
               src={staticFile("logos/kernel-mark.svg")}
-              style={{ width: 64, height: 64, objectFit: "contain", opacity: 0.95 }}
+              style={{ width: 60, height: 60, objectFit: "contain", opacity: 0.95 }}
             />
           </div>
-          {/* Big number that shrinks then dissolves */}
+          {/* Big number that dissolves */}
           <div
             style={{
               fontFamily: FONT,
@@ -542,7 +577,7 @@ const S6_Kernel: React.FC<SceneProps> = () => {
             {formatted}
             <span style={{ fontFamily: MONO, fontSize: 22, color: MUTED, letterSpacing: "0.25em", marginLeft: 22 }}>TOKENS</span>
           </div>
-          {/* Bar shrinks */}
+          {/* Bar shrinks via spring */}
           <div style={{ width: 760, height: 1, background: FAINT, position: "relative" }}>
             <div
               style={{
@@ -553,6 +588,7 @@ const S6_Kernel: React.FC<SceneProps> = () => {
                 width: 760 * barScale,
                 background: TEXT,
                 opacity: 0.7,
+                boxShadow: `0 0 6px ${TEXT}33`,
               }}
             />
           </div>
@@ -572,19 +608,9 @@ const S6_Kernel: React.FC<SceneProps> = () => {
           >
             1,928 <span style={{ fontFamily: MONO, fontSize: 14, color: MUTED, letterSpacing: "0.28em", marginLeft: 14 }}>SAME OUTPUT</span>
           </div>
-          {/* −85% reveal */}
-          <div
-            style={{
-              fontFamily: MONO,
-              fontSize: 18,
-              color: TEXT,
-              letterSpacing: "0.32em",
-              opacity: pctShow,
-              transform: `translateY(${(1 - pctShow) * 8}px)`,
-              marginTop: 16,
-            }}
-          >
-            − 85% · COST
+          {/* −85% badge (glass) */}
+          <div style={{ marginTop: 20 }}>
+            <GlassBadge startFrame={120}>− 85% · COST</GlassBadge>
           </div>
         </AbsoluteFill>
       </CameraDrift>
@@ -594,52 +620,70 @@ const S6_Kernel: React.FC<SceneProps> = () => {
   );
 };
 
-// ─── S7 · CEPHALO mark + family (32-40s) ──────────────────────────────
-//   Layers: starfield-like particles + halo + char-stagger CEPHALO +
-//   product family glyph-scramble row + URL + drift + final fade
+// ─── S7 · CEPHALO mark + family (32–40s, 240f) ────────────────────────
+//   Layers: 3D scene with camera dolly + particles + halo + spring-enter
+//   logo + 3x→1x kinetic CEPHALO + 2-product family row spring-staggered +
+//   URL glyph-scramble + final fade. SFX: orchestral swell + final impact.
 const S7_Wordmark: React.FC<SceneProps> = ({ durationInFrames }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const masterFade = interpolate(
     frame,
     [durationInFrames - 30, durationInFrames],
     [1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeOut }
   );
-  const family = ["POLYPUS", "KERNEL"];
+  const family = ["POLYPUS", "KERNEL"] as const;
+  const markSpring = spring({ frame: Math.max(0, frame - 5), fps, config: SPRING_HERO });
+  // 3x→1x scale entry on CEPHALO wordmark
+  const wordSpring = spring({ frame: Math.max(0, frame - 25), fps, config: SPRING_HERO, durationInFrames: 50 });
+  const wordScale = 3 - 2 * wordSpring;
+  const wordOpacity = interpolate(frame, [25, 50], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeOut });
   return (
     <AbsoluteFill style={{ background: BG, opacity: masterFade }}>
-      <ParticleStream count={120} speed={0.3} size={1.4} opacity={0.35} />
+      {/* 3D depth layer with camera dolly */}
+      <CephaloThreeScene rings={3} particleCount={48} cameraDolly />
+      <ParticleStream count={120} speed={0.3} size={1.4} opacity={0.3} />
       <Halo size={1400} opacity={0.08} period={240} />
-      <CameraDrift amplitude={6} scale={0.005} period={300}>
+      <CameraDrift amplitude={4} scale={0.004} period={300}>
         <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 50 }}>
           {/* CEPHALO mark above */}
           <div
             style={{
-              opacity: interpolate(frame, [10, 40], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }),
-              transform: `scale(${0.9 + 0.1 * interpolate(frame, [10, 40], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
+              opacity: markSpring,
+              transform: `scale(${0.7 + 0.3 * markSpring})`,
               marginBottom: -10,
               filter: "grayscale(1) brightness(1.05)",
             }}
           >
             <Img
               src={staticFile("logos/cephalo-mark.png")}
-              style={{ width: 96, height: 96, objectFit: "contain", opacity: 0.95 }}
+              style={{ width: 110, height: 110, objectFit: "contain", opacity: 0.95 }}
             />
           </div>
-          {/* Wordmark — kinetic letters */}
-          <KineticLetters
-            text="CEPHALO"
-            startFrame={20}
-            staggerFrames={4}
-            letterDuration={28}
-            fontSize={208}
-            fontWeight={600}
-            letterSpacing="-0.04em"
-            color={TEXT}
-            origin="below"
-            driftPx={28}
-          />
-          {/* Family row — 2 product logos with names beneath, desaturated */}
+          {/* Wordmark — 3x→1x scale entry */}
+          <div
+            style={{
+              opacity: wordOpacity,
+              transform: `scale(${wordScale})`,
+              transformOrigin: "center",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: FONT,
+                fontSize: 208,
+                fontWeight: 600,
+                letterSpacing: "-0.04em",
+                color: TEXT,
+                lineHeight: 1,
+                textShadow: `0 0 60px ${TEXT}22`,
+              }}
+            >
+              CEPHALO
+            </span>
+          </div>
+          {/* Family row — Polypus + Kernel logos with names, spring-staggered */}
           <div
             style={{
               display: "flex",
@@ -649,11 +693,7 @@ const S7_Wordmark: React.FC<SceneProps> = ({ durationInFrames }) => {
             }}
           >
             {family.map((b, i) => {
-              const enter = interpolate(frame, [90 + i * 14, 130 + i * 14], [0, 1], {
-                extrapolateLeft: "clamp",
-                extrapolateRight: "clamp",
-                easing: easeBezier,
-              });
+              const s = spring({ frame: Math.max(0, frame - 80 - i * 14), fps, config: SPRING_HERO });
               return (
                 <div
                   key={b}
@@ -662,20 +702,20 @@ const S7_Wordmark: React.FC<SceneProps> = ({ durationInFrames }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     gap: 12,
-                    opacity: enter,
-                    transform: `translateY(${(1 - enter) * 10}px)`,
+                    opacity: s,
+                    transform: `translateY(${(1 - s) * 14}px) scale(${0.85 + 0.15 * s})`,
                   }}
                 >
                   <div style={{ filter: "grayscale(1) brightness(1.2)" }}>
                     <Img
                       src={staticFile(b === "POLYPUS" ? "logos/polypus-mark.svg" : "logos/kernel-mark.svg")}
-                      style={{ width: 44, height: 44, objectFit: "contain", opacity: 0.95 }}
+                      style={{ width: 48, height: 48, objectFit: "contain", opacity: 0.95 }}
                     />
                   </div>
                   <div style={{ fontFamily: MONO }}>
                     <GlyphScramble
                       text={b}
-                      startFrame={100 + i * 14}
+                      startFrame={90 + i * 14}
                       resolveDuration={20}
                       staggerFrames={1.2}
                       fontSize={12}
@@ -749,13 +789,9 @@ export const CephaloLabs: React.FC = () => {
       </TransitionSeries>
       <Vignette strength={0.65} />
       <Grain opacity={0.04} />
-      {/* Persistent CEPHALO sigil — desaturated, very subtle */}
       <div style={{ filter: "grayscale(1) brightness(1.1)" }}>
         <LogoSigil brand="cephalo" position="bottom-left" size={20} opacity={0.32} />
       </div>
     </AbsoluteFill>
   );
 };
-
-// Silence unused-import lint for primitives we expose for later use.
-void TextScramble;
