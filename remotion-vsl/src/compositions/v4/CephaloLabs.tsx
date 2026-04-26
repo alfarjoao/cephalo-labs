@@ -265,9 +265,23 @@ const S4_Polypus: React.FC<SceneProps> = () => {
           color={TEXT}
         />
       </div>
-      {/* Center: word kinetic */}
+      {/* Center: logo + word kinetic */}
       <AbsoluteFill style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 26 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22 }}>
+          {/* Polypus mark — desaturated */}
+          <div
+            style={{
+              opacity: interpolate(frame, [40, 75], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }),
+              transform: `scale(${0.85 + 0.15 * interpolate(frame, [40, 75], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
+              marginBottom: 4,
+              filter: "grayscale(1) brightness(1.15)",
+            }}
+          >
+            <Img
+              src={staticFile("logos/polypus-mark.svg")}
+              style={{ width: 72, height: 72, objectFit: "contain", opacity: 0.95 }}
+            />
+          </div>
           <KineticLetters
             text="POLYPUS"
             startFrame={50}
@@ -498,6 +512,20 @@ const S6_Kernel: React.FC<SceneProps> = () => {
         </div>
         {/* Center stack */}
         <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24 }}>
+          {/* Kernel mark above the numbers — desaturated */}
+          <div
+            style={{
+              opacity: interpolate(frame, [4, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }),
+              transform: `translateY(${(1 - interpolate(frame, [4, 36], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })) * 8}px)`,
+              marginBottom: 4,
+              filter: "grayscale(1) brightness(1.15)",
+            }}
+          >
+            <Img
+              src={staticFile("logos/kernel-mark.svg")}
+              style={{ width: 64, height: 64, objectFit: "contain", opacity: 0.95 }}
+            />
+          </div>
           {/* Big number that shrinks then dissolves */}
           <div
             style={{
@@ -577,7 +605,7 @@ const S7_Wordmark: React.FC<SceneProps> = ({ durationInFrames }) => {
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeBezier }
   );
-  const family = ["POLYPUS", "KERNEL", "PANTHEON", "SOVEREIGN"];
+  const family = ["POLYPUS", "KERNEL"];
   return (
     <AbsoluteFill style={{ background: BG, opacity: masterFade }}>
       <ParticleStream count={120} speed={0.3} size={1.4} opacity={0.35} />
@@ -611,46 +639,53 @@ const S7_Wordmark: React.FC<SceneProps> = ({ durationInFrames }) => {
             origin="below"
             driftPx={28}
           />
-          {/* Family row — glyph-scrambled brand list */}
+          {/* Family row — 2 product logos with names beneath, desaturated */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 36,
-              marginTop: 12,
+              gap: 80,
+              marginTop: 16,
             }}
           >
-            {family.map((b, i) => (
-              <React.Fragment key={b}>
-                <div style={{ fontFamily: MONO }}>
-                  <GlyphScramble
-                    text={b}
-                    startFrame={90 + i * 12}
-                    resolveDuration={22}
-                    staggerFrames={1.4}
-                    fontSize={13}
-                    letterSpacing="0.32em"
-                    color={MUTED}
-                  />
+            {family.map((b, i) => {
+              const enter = interpolate(frame, [90 + i * 14, 130 + i * 14], [0, 1], {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+                easing: easeBezier,
+              });
+              return (
+                <div
+                  key={b}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 12,
+                    opacity: enter,
+                    transform: `translateY(${(1 - enter) * 10}px)`,
+                  }}
+                >
+                  <div style={{ filter: "grayscale(1) brightness(1.2)" }}>
+                    <Img
+                      src={staticFile(b === "POLYPUS" ? "logos/polypus-mark.svg" : "logos/kernel-mark.svg")}
+                      style={{ width: 44, height: 44, objectFit: "contain", opacity: 0.95 }}
+                    />
+                  </div>
+                  <div style={{ fontFamily: MONO }}>
+                    <GlyphScramble
+                      text={b}
+                      startFrame={100 + i * 14}
+                      resolveDuration={20}
+                      staggerFrames={1.2}
+                      fontSize={12}
+                      letterSpacing="0.32em"
+                      color={MUTED}
+                    />
+                  </div>
                 </div>
-                {i < family.length - 1 && (
-                  <span
-                    style={{
-                      fontFamily: MONO,
-                      fontSize: 11,
-                      color: MUTED,
-                      letterSpacing: "0.32em",
-                      opacity: interpolate(frame, [110 + i * 12, 130 + i * 12], [0, 0.5], {
-                        extrapolateLeft: "clamp",
-                        extrapolateRight: "clamp",
-                      }),
-                    }}
-                  >
-                    ·
-                  </span>
-                )}
-              </React.Fragment>
-            ))}
+              );
+            })}
           </div>
           {/* URL */}
           <div
